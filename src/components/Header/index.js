@@ -11,7 +11,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import * as actions from '../../store/modules/auth/actions';
 import history from '../../services/history';
-import { Nav } from './styled';
+import { Nav, NavLeft, NavRight, NavHeader } from './styled';
 import logo from '../../img/logo.png';
 
 export default function Header() {
@@ -26,26 +26,31 @@ export default function Header() {
 
   return (
     <Nav>
-      <img src={logo} alt="Online Store" />
+      <NavHeader>
+        <NavLeft>
+          <img src={logo} alt="Online Store" />
+        </NavLeft>
+        <NavRight>
+          <Link to="/">
+            <FaHome size={20} />
+          </Link>
+          <Link to="/register">
+            <FaUserAlt size={20} />
+          </Link>
 
-      <Link to="/">
-        <FaHome size={24} />
-      </Link>
-      <Link to="/register">
-        <FaUserAlt size={24} />
-      </Link>
+          {isLoggedIn ? (
+            <Link onClick={handleLogout} to="/logout">
+              <FaPowerOff size={20} />
+            </Link>
+          ) : (
+            <Link to="/login">
+              <FaSignInAlt size={20} />
+            </Link>
+          )}
 
-      {isLoggedIn ? (
-        <Link onClick={handleLogout} to="/logout">
-          <FaPowerOff size={24} />
-        </Link>
-      ) : (
-        <Link to="/login">
-          <FaSignInAlt size={24} />
-        </Link>
-      )}
-
-      {isLoggedIn && <FaCircle size={24} color="#8EBB0F" />}
+          {isLoggedIn && <FaCircle size={20} color="#8EBB0F" />}
+        </NavRight>
+      </NavHeader>
     </Nav>
   );
 }

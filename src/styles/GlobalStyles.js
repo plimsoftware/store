@@ -62,10 +62,10 @@ export default createGlobalStyle`
 `;
 
 export const Container = styled.section`
-  max-width: 600px;
+  max-width: 70%;
   background: #fff;
-  margin: 30px auto;
+  margin: 20px auto;
   padding: 20px;
   border-radius: 4px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 `;
