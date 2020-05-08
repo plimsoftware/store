@@ -1,29 +1,55 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { get } from 'lodash';
-import { FaWindowClose, FaCarrot } from 'react-icons/fa';
+import { FaShoppingCart, FaCarrot } from 'react-icons/fa';
 
 import { toast } from 'react-toastify';
-import { Container } from '../../styles/GlobalStyles';
-import { ProductContainer, ProfilePicture, ProductShow } from './styled';
+import {
+  ProductContainer,
+  ProfilePicture,
+  ProductShow,
+  MiddleContainer,
+  MainContainer,
+  MenuContainer,
+  MenuItem,
+  QuantityDiv,
+  NumberBox,
+  AddRemove,
+  ProdAddBasket,
+  IconBasket,
+} from './styled';
 import axios from '../../services/axios';
 
 import Loading from '../../components/Loading';
 
 export default function Products() {
   const [products, setProducts] = useState([]);
+  const [prodcats, setProdCats] = useState([]);
+  const [prod, setProd] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     async function getData() {
       setIsLoading(true);
-      const response = await axios.get('/product');
-      setProducts(response.data);
-      setIsLoading(false);
+      if (prod === 0) {
+        const response = await axios.get('/product');
+        setProducts(response.data);
+      } else {
+        const response = await axios.get(`/product/?id=${prod}`);
+        setProducts(response.data);
+      }
     }
 
     getData();
-  }, []);
+
+    async function getDataMenu() {
+      const response = await axios.get('/prodcat');
+      setProdCats(response.data);
+      setIsLoading(false);
+    }
+
+    getDataMenu();
+  }, [prod]);
 
   const handleDeleteAsk = (e) => {
     e.preventDefault();
@@ -54,29 +80,56 @@ export default function Products() {
   };
 
   return (
-    <Container>
-      <Loading isLoading={isLoading} />
-      <h1>Produtos:</h1>
+    <MainContainer>
+      <MenuContainer>
+        <ul>
+          <MenuItem key="0" onClick={() => setProd(0)}>
+            Todos
+          </MenuItem>
+          {prodcats.map((prodcat) => (
+            <MenuItem
+              key={String(prodcat.id)}
+              onClick={() => setProd(prodcat.id)}
+            >
+              {prodcat.name}
+            </MenuItem>
+          ))}
+        </ul>
+      </MenuContainer>
+      <MiddleContainer>
+        <Loading isLoading={isLoading} />
+        <h1>Produtos:</h1>
 
-      <ProductContainer>
-        {products.map((product, index) => (
-          <ProductShow key={String(product.id)}>
-            <ProfilePicture>
-              {get(product, 'Photo.url', false) ? (
-                <img src={product.Photo.url} alt="" />
-              ) : (
-                <FaCarrot size={50} />
-              )}
-            </ProfilePicture>
+        <ProductContainer>
+          {products.map((product) => (
+            <ProductShow key={String(product.id)}>
+              <ProfilePicture>
+                {get(product, 'Photo.url', false) ? (
+                  <img src={product.Photo.url} alt="" />
+                ) : (
+                  <FaCarrot size={50} />
+                )}
+              </ProfilePicture>
 
-            <span>{product.name}</span>
-
-            <Link onClick={handleDeleteAsk} to={`/aluno/${product.id}/delete`}>
-              <FaWindowClose size={16} />
-            </Link>
-          </ProductShow>
-        ))}
-      </ProductContainer>
-    </Container>
+              <span>{product.name}</span>
+              <ProdAddBasket>
+                <QuantityDiv>
+                  Q<NumberBox>N</NumberBox>
+                  <AddRemove>
+                    A<br />R
+                  </AddRemove>
+                </QuantityDiv>
+                <IconBasket
+                  onClick={handleDeleteAsk}
+                  to={`/aluno/${product.id}/delete`}
+                >
+                  <FaShoppingCart size={26} color="red" />
+                </IconBasket>
+              </ProdAddBasket>
+            </ProductShow>
+          ))}
+        </ProductContainer>
+      </MiddleContainer>
+    </MainContainer>
   );
 }

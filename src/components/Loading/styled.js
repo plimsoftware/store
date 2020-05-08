@@ -10,7 +10,7 @@ export const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: black;
   font-size: 30px;
 
   div {
@@ -18,10 +18,22 @@ export const Container = styled.div`
     width: 100%;
     height: 100%;
     z-index: 1;
-    background: rgba(0, 0, 0, 0.8);
   }
 
   span {
     z-index: 2;
+  }
+`;
+
+export const StyledSpinner = styled.svg`
+  animation: rotate 1s linear infinite;
+  margin: 50px;
+  width: 50px;
+  height: 50px;
+
+  @keyframes rotate {
+    100% {
+      transform: rotate(360deg);
+    }
   }
 `;

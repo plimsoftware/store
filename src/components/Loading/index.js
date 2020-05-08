@@ -1,13 +1,19 @@
 import React from 'react';
 import Proptype from 'prop-types';
-import { Container } from './styled';
+import { FaSpinner } from 'react-icons/fa';
+
+import { Container, StyledSpinner } from './styled';
 
 export default function Loading({ isLoading }) {
   if (!isLoading) return <></>;
   return (
     <Container>
       <div />
-      <span>Carregando ...</span>
+      <span>
+        <StyledSpinner>
+          <FaSpinner size={50} />
+        </StyledSpinner>
+      </span>
     </Container>
   );
 }

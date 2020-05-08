@@ -6,7 +6,7 @@ import { get } from 'lodash';
 
 import { Container } from '../../styles/GlobalStyles';
 import Loading from '../../components/Loading';
-import { Form } from './styled';
+import { Form, Title, ContainerLogin } from './styled';
 import * as actions from '../../store/modules/auth/actions';
 
 export default function Login(props) {
@@ -40,8 +40,9 @@ export default function Login(props) {
   };
 
   return (
-    <Container>
+    <ContainerLogin>
       <Loading isLoading={isLoading} />
+      <Title>Administração da Loja</Title>
       <h1>Login</h1>
 
       <Form onSubmit={handleSubmit}>
@@ -59,6 +60,6 @@ export default function Login(props) {
         />
         <button type="submit">Entrar</button>
       </Form>
-    </Container>
+    </ContainerLogin>
   );
 }

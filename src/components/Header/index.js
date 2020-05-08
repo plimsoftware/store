@@ -28,7 +28,9 @@ export default function Header() {
     <Nav>
       <NavHeader>
         <NavLeft>
-          <img src={logo} alt="Online Store" />
+          <Link to="/">
+            <img src={logo} alt="Online Store" />
+          </Link>
         </NavLeft>
         <NavRight>
           <Link to="/">
