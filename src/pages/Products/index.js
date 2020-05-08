@@ -26,6 +26,7 @@ export default function Products() {
   const [products, setProducts] = useState([]);
   const [prodcats, setProdCats] = useState([]);
   const [prod, setProd] = useState(0);
+  const [prodTitle, setProdTitle] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -49,7 +50,7 @@ export default function Products() {
     }
 
     getDataMenu();
-  }, [prod]);
+  }, [prod, prodTitle]);
 
   const handleDeleteAsk = (e) => {
     e.preventDefault();
@@ -83,13 +84,15 @@ export default function Products() {
     <MainContainer>
       <MenuContainer>
         <ul>
-          <MenuItem key="0" onClick={() => setProd(0)}>
+          <MenuItem key="0" onClick={() => (setProd(0), setProdTitle(''))}>
             Todos
           </MenuItem>
           {prodcats.map((prodcat) => (
             <MenuItem
               key={String(prodcat.id)}
-              onClick={() => setProd(prodcat.id)}
+              onClick={() => (
+                setProd(prodcat.id), setProdTitle(`(${prodcat.name})`)
+              )}
             >
               {prodcat.name}
             </MenuItem>
@@ -98,36 +101,40 @@ export default function Products() {
       </MenuContainer>
       <MiddleContainer>
         <Loading isLoading={isLoading} />
-        <h1>Produtos:</h1>
+        <h1>Produtos{prodTitle}:</h1>
 
         <ProductContainer>
-          {products.map((product) => (
-            <ProductShow key={String(product.id)}>
-              <ProfilePicture>
-                {get(product, 'Photo.url', false) ? (
-                  <img src={product.Photo.url} alt="" />
-                ) : (
-                  <FaCarrot size={50} />
-                )}
-              </ProfilePicture>
+          {products.length === 0 ? (
+            <strong>Sem produtos disponiveis nesta categoria.</strong>
+          ) : (
+            products.map((product) => (
+              <ProductShow key={String(product.id)}>
+                <ProfilePicture>
+                  {get(product, 'Photo.url', false) ? (
+                    <img src={product.Photo.url} alt="" />
+                  ) : (
+                    <FaCarrot size={50} />
+                  )}
+                </ProfilePicture>
 
-              <span>{product.name}</span>
-              <ProdAddBasket>
-                <QuantityDiv>
-                  Q<NumberBox>N</NumberBox>
-                  <AddRemove>
-                    A<br />R
-                  </AddRemove>
-                </QuantityDiv>
-                <IconBasket
-                  onClick={handleDeleteAsk}
-                  to={`/aluno/${product.id}/delete`}
-                >
-                  <FaShoppingCart size={26} color="red" />
-                </IconBasket>
-              </ProdAddBasket>
-            </ProductShow>
-          ))}
+                <span>{product.name}</span>
+                <ProdAddBasket>
+                  <QuantityDiv>
+                    Q<NumberBox>N</NumberBox>
+                    <AddRemove>
+                      A<br />R
+                    </AddRemove>
+                  </QuantityDiv>
+                  <IconBasket
+                    onClick={handleDeleteAsk}
+                    to={`/aluno/${product.id}/delete`}
+                  >
+                    <FaShoppingCart size={26} color="red" />
+                  </IconBasket>
+                </ProdAddBasket>
+              </ProductShow>
+            ))
+          )}
         </ProductContainer>
       </MiddleContainer>
     </MainContainer>
