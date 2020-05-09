@@ -17,6 +17,7 @@ import {
   AddRemove,
   ProdAddBasket,
   IconBasket,
+  Button,
 } from './styled';
 import axios from '../../services/axios';
 
@@ -120,9 +121,13 @@ export default function Products() {
                 <span>{product.name}</span>
                 <ProdAddBasket>
                   <QuantityDiv>
-                    Q<NumberBox>N</NumberBox>
+                    <NumberBox>
+                      <input type="number" />
+                    </NumberBox>
                     <AddRemove>
-                      A<br />R
+                      <Button type="submit">+</Button>
+                      <br />
+                      <Button type="submit">-</Button>
                     </AddRemove>
                   </QuantityDiv>
                   <IconBasket

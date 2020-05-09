@@ -4,9 +4,8 @@ import { isEmail } from 'validator';
 import { useDispatch, useSelector } from 'react-redux';
 import { get } from 'lodash';
 
-import { Container } from '../../styles/GlobalStyles';
 import Loading from '../../components/Loading';
-import { Form, Title, ContainerLogin } from './styled';
+import { Form, Title, ContainerLogin, MainContainer, Button } from './styled';
 import * as actions from '../../store/modules/auth/actions';
 
 export default function Login(props) {
@@ -40,26 +39,28 @@ export default function Login(props) {
   };
 
   return (
-    <ContainerLogin>
-      <Loading isLoading={isLoading} />
-      <Title>Administração da Loja</Title>
-      <h1>Login</h1>
+    <MainContainer>
+      <ContainerLogin>
+        <Loading isLoading={isLoading} />
+        <Title>Administração da Loja</Title>
+        <h1>Login</h1>
 
-      <Form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Digite o seu e-mail"
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Digite a sua password"
-        />
-        <button type="submit">Entrar</button>
-      </Form>
-    </ContainerLogin>
+        <Form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Digite o seu e-mail"
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Digite a sua password"
+          />
+          <Button type="submit">Entrar</Button>
+        </Form>
+      </ContainerLogin>
+    </MainContainer>
   );
 }

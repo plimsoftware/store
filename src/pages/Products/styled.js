@@ -38,7 +38,7 @@ export const MenuContainer = styled.div`
 `;
 
 export const ProductContainer = styled.div`
-  margin-top: 100px;
+  margin-top: 20px;
 `;
 
 export const ProfilePicture = styled.div`
@@ -73,24 +73,24 @@ export const MenuItem = styled.li`
   padding: 5px 10px 5px 10px;
   border-radius: 10px;
   margin-bottom: 2px;
-  background-color: ${colors.primaryMenuColor};
+  background-color: ${colors.primaryColor};
   cursor: pointer;
 
   &:hover {
     transition: all 300ms;
+    filter: brightness(75%);
   }
 `;
 
 export const ProdAddBasket = styled.section`
   width: 100px;
   font-size: 10px;
-  background-color: yellow;
+
   display: flex;
 `;
 
 export const QuantityDiv = styled.div`
   width: 60%;
-  background-color: red;
   display: flex;
 `;
 
@@ -99,11 +99,26 @@ export const IconBasket = styled(Link)`
 `;
 
 export const NumberBox = styled.div`
-  width: 70%;
-  background-color: green;
+  width: 60px;
+  justify-content: left;
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
+
+  input {
+    width: 40px;
+    height: 30px;
+  }
+`;
+
+export const Button = styled.button`
+  width: 15px;
+  height: 15px;
+  line-height: 0.25em;
 `;
 
 export const AddRemove = styled.div`
-  width: 30%;
-  background-color: blue;
+  width: 40%;
 `;
