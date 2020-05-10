@@ -6,22 +6,15 @@ import { FaShoppingCart, FaCarrot } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import {
   ProductContainer,
-  ProfilePicture,
-  ProductShow,
   MiddleContainer,
   MainContainer,
   MenuContainer,
   MenuItem,
-  QuantityDiv,
-  NumberBox,
-  AddRemove,
-  ProdAddBasket,
-  IconBasket,
-  Button,
 } from './styled';
 import axios from '../../services/axios';
 
 import Loading from '../../components/Loading';
+import ProductShow from '../../components/ProductShow';
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -29,7 +22,6 @@ export default function Products() {
   const [prod, setProd] = useState(0);
   const [prodTitle, setProdTitle] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [inputFields, setInputFields] = useState([{}]);
 
   useEffect(() => {
     async function getData() {
@@ -52,26 +44,13 @@ export default function Products() {
     }
 
     getDataMenu();
-  }, [prod, prodTitle, products, inputFields]);
+  }, [prod, prodTitle, products]);
 
   const handleDeleteAsk = (e) => {
     e.preventDefault();
     const exclamation = e.currentTarget.nextSibling;
     exclamation.setAttribute('display', 'block');
     e.currentTarget.remove();
-  };
-
-  const handleOnChange = (e, index) => {
-    e.persist();
-    const values = [...inputFields];
-    values[index].input = e.target.value;
-    setInputFields(values);
-  };
-
-  const handleOnChangeInit = (e) => {
-    const values = [...inputFields];
-    values.push({ input: '' });
-    setInputFields(values);
   };
 
   const handleDelete = async (e, id, index) => {
@@ -93,11 +72,6 @@ export default function Products() {
 
       setIsLoading(false);
     }
-  };
-
-  const handleUpButton = (e) => {
-    e.persist();
-    console.log(e);
   };
 
   return (
@@ -128,43 +102,7 @@ export default function Products() {
             <strong>Sem produtos disponiveis nesta categoria.</strong>
           ) : (
             products.map((product, index) => (
-              <ProductShow key={String(product.id)}>
-                <ProfilePicture>
-                  {get(product, 'Photo.url', false) ? (
-                    <img src={product.Photo.url} alt="" />
-                  ) : (
-                    <FaCarrot size={50} />
-                  )}
-                </ProfilePicture>
-
-                <strong>{product.name}</strong>
-                <span>
-                  Preço: {product.price}€/{product.priceunit}
-                </span>
-                <ProdAddBasket>
-                  <QuantityDiv>
-                    <NumberBox>
-                      <input
-                        type="number"
-                        name={product.id}
-                        value={inputFields[index].input}
-                        onChange={(e) => handleOnChange(e, index)}
-                      />
-                    </NumberBox>
-                    <AddRemove>
-                      <Button onClick={(e) => {}}>+</Button>
-                      <br />
-                      <Button type="submit">-</Button>
-                    </AddRemove>
-                  </QuantityDiv>
-                  <IconBasket
-                    onClick={handleDeleteAsk}
-                    to={`/aluno/${product.id}/delete`}
-                  >
-                    <FaShoppingCart size={26} color="red" />
-                  </IconBasket>
-                </ProdAddBasket>
-              </ProductShow>
+              <ProductShow props={(product, index)} />
             ))
           )}
         </ProductContainer>
