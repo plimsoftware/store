@@ -85,7 +85,7 @@ export const MenuItem = styled.li`
 export const ProdAddBasket = styled.section`
   width: 100px;
   font-size: 10px;
-
+  margin-top: 5px;
   display: flex;
 `;
 
@@ -110,13 +110,24 @@ export const NumberBox = styled.div`
   input {
     width: 40px;
     height: 30px;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
   }
 `;
 
 export const Button = styled.button`
   width: 15px;
-  height: 15px;
+  height: 14px;
   line-height: 0.25em;
+  color: white;
+  background-color: red;
+  border: none;
+  margin-bottom: 1px;
+  font-size: 11px;
+  align-content: center;
+  justify-content: center;
+  cursor: pointer;
 `;
 
 export const AddRemove = styled.div`
