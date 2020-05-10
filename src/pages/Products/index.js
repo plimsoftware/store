@@ -10,17 +10,25 @@ import {
   MainContainer,
   MenuContainer,
   MenuItem,
+  ProfilePicture,
+  QuantityDiv,
+  NumberBox,
+  AddRemove,
+  ProdAddBasket,
+  ProductShow,
+  IconBasket,
+  Button,
 } from './styled';
 import axios from '../../services/axios';
 
 import Loading from '../../components/Loading';
-import ProductShow from '../../components/ProductShow';
 
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [prodcats, setProdCats] = useState([]);
   const [prod, setProd] = useState(0);
   const [prodTitle, setProdTitle] = useState('');
+  const [inputFields, setInputFields] = useState([{}]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -44,7 +52,20 @@ export default function Products() {
     }
 
     getDataMenu();
-  }, [prod, prodTitle, products]);
+  }, [prod, prodTitle]);
+
+  const handleOnChange = (e, index) => {
+    e.persist();
+    const values = [...inputFields];
+    values[index].input = e.target.value;
+    setInputFields(values);
+  };
+
+  const handleOnChangeInit = (e) => {
+    const values = [...inputFields];
+    values.push({ input: '' });
+    setInputFields(values);
+  };
 
   const handleDeleteAsk = (e) => {
     e.preventDefault();
@@ -102,7 +123,38 @@ export default function Products() {
             <strong>Sem produtos disponiveis nesta categoria.</strong>
           ) : (
             products.map((product, index) => (
-              <ProductShow props={(product, index)} />
+              <ProductShow key={product.id}>
+                <ProfilePicture>
+                  {get(product, 'Photo.url', false) ? (
+                    <img src={product.Photo.url} alt="" />
+                  ) : (
+                    <FaCarrot size={50} />
+                  )}
+                </ProfilePicture>
+
+                <strong>{product.name}</strong>
+                <span>
+                  Preço: {product.price}€/{product.priceunit}
+                </span>
+                <ProdAddBasket>
+                  <QuantityDiv>
+                    <NumberBox>
+                      <input type="number" name={product.id} />
+                    </NumberBox>
+                    <AddRemove>
+                      <Button onClick={(e) => {}}>+</Button>
+                      <br />
+                      <Button type="submit">-</Button>
+                    </AddRemove>
+                  </QuantityDiv>
+                  <IconBasket
+                    onClick={handleDeleteAsk}
+                    to={`/aluno/${product.id}/delete`}
+                  >
+                    <FaShoppingCart size={26} color="red" />
+                  </IconBasket>
+                </ProdAddBasket>
+              </ProductShow>
             ))
           )}
         </ProductContainer>
