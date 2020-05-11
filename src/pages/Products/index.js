@@ -22,6 +22,7 @@ import {
 import axios from '../../services/axios';
 
 import Loading from '../../components/Loading';
+import ProductDetail from '../../components/ProductDetail';
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -30,6 +31,8 @@ export default function Products() {
   const [prodTitle, setProdTitle] = useState('');
   const [inputFields, setInputFields] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [detailStatus, setDetailStatus] = useState(false);
+  const [currentProd, setCurrentProd] = useState({});
 
   useEffect(() => {
     function setInputsInitial(length) {
@@ -87,6 +90,11 @@ export default function Products() {
     setInputFields(values);
   };
 
+  const handleClickDetail = (id) => {
+    setCurrentProd(id);
+    setDetailStatus(true);
+  };
+
   const handleDeleteAsk = (e) => {
     e.preventDefault();
     const exclamation = e.currentTarget.nextSibling;
@@ -115,6 +123,11 @@ export default function Products() {
       </MenuContainer>
       <MiddleContainer>
         <Loading isLoading={isLoading} />
+        <ProductDetail
+          detailStatus={detailStatus}
+          currentProd={currentProd}
+          close={() => setDetailStatus(false)}
+        />
         <h1>Produtos{prodTitle}:</h1>
 
         <ProductContainer>
@@ -123,7 +136,7 @@ export default function Products() {
           ) : (
             products.map((product, index) => (
               <ProductShow key={product.id}>
-                <ProfilePicture>
+                <ProfilePicture onClick={() => handleClickDetail(product)}>
                   {get(product, 'Photo.url', false) ? (
                     <img src={product.Photo.url} alt="" />
                   ) : (

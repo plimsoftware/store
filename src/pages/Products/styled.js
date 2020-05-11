@@ -51,6 +51,8 @@ export const ProfilePicture = styled.div`
     width: 200px;
     height: 150px;
   }
+
+  cursor: pointer;
 `;
 
 export const ProductShow = styled.div`
