@@ -31,10 +31,13 @@ export default function ProductDetail({ detailStatus, currentProd, close }) {
           <strong>X</strong>
         </Close>
         <h1>{currentProd.name}</h1>
-        <p>{currentProd.long_desc}</p>
+        <h2>{currentProd.long_desc}</h2>
+        <p>Stock:</p>
+        <p>Promoção:</p>
         <span>
           Preço: {currentProd.price}€/{currentProd.priceunit}
         </span>
+
         <ProdAddBasket>
           <QuantityDiv>
             <NumberBox>

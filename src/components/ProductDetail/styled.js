@@ -38,6 +38,7 @@ export const ProdBackColor = styled.div`
   margin-top: -200px;
   width: 650px;
   height: 400px;
+  border-radius: 10px;
   z-index: 1;
   background-color: ${colors.primaryColor};
   opacity: 1;
@@ -55,6 +56,7 @@ export const ProdImage = styled.div`
   background-image: url('${(props) => props.url}');
   background-size: cover;
   background-color: blue;
+  border-radius: 10px;
   opacity: 0.3;
 `;
 
@@ -82,11 +84,19 @@ export const ProdContainer = styled.div`
     font-size: 30px;
   }
 
+  h2 {
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 20px;
+    font-size: 20px;
+    font-weight: normal;
+  }
+
   p {
     margin-left: 20px;
     margin-right: 20px;
-    margin-top: 45px;
-    font-size: 20px;
+    margin-top: 20px;
+    font-size: 15px;
   }
 
   span {
@@ -112,32 +122,34 @@ export const ProfilePicture = styled.div`
 `;
 
 export const ProdAddBasket = styled.section`
-  width: 100px;
   font-size: 10px;
-  margin-top: 5px;
+  position: absolute;
   display: flex;
+  margin-right: 5px;
+  bottom: 0;
+  right: 0;
 `;
 
 export const QuantityDiv = styled.div`
-  width: 60%;
-  display: flex;
+  width: 50%;
+  display: inline-flex;
+  margin-bottom: 20px;
 `;
 
 export const NumberBox = styled.div`
   width: 60px;
-  justify-content: left;
-
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-  }
-
+  display: inline-flex;
   input {
     width: 40px;
     height: 30px;
     align-content: center;
     justify-content: center;
     text-align: center;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
   }
 `;
 
