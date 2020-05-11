@@ -28,18 +28,28 @@ export default function Products() {
   const [prodcats, setProdCats] = useState([]);
   const [prod, setProd] = useState(0);
   const [prodTitle, setProdTitle] = useState('');
-  const [inputFields, setInputFields] = useState([{}]);
+  const [inputFields, setInputFields] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    function setInputsInitial(length) {
+      const newInputFields = [];
+      for (let i = 0; i < length; i += 1) {
+        newInputFields.push('0');
+      }
+      setInputFields(newInputFields);
+    }
+
     async function getData() {
       setIsLoading(true);
       if (prod === 0) {
         const response = await axios.get('/product');
         setProducts(response.data);
+        setInputsInitial(response.data.length);
       } else {
         const response = await axios.get(`/product/?id=${prod}`);
         setProducts(response.data);
+        setInputsInitial(response.data.length);
       }
     }
 
@@ -54,16 +64,26 @@ export default function Products() {
     getDataMenu();
   }, [prod, prodTitle]);
 
-  const handleOnChange = (e, index) => {
-    e.persist();
+  const handleInputChange = (index, evt) => {
     const values = [...inputFields];
-    values[index].input = e.target.value;
+    values[index] = Math.abs(evt.target.value);
     setInputFields(values);
   };
 
-  const handleOnChangeInit = (e) => {
+  const handleInputBUp = (index) => {
     const values = [...inputFields];
-    values.push({ input: '' });
+    let newValue = Number(values[index]);
+    newValue += 1;
+    values[index] = newValue;
+    setInputFields(values);
+  };
+
+  const handleInputBDown = (index) => {
+    const values = [...inputFields];
+    let newValue = Number(values[index]);
+    newValue -= 1;
+    if (newValue < 0) newValue = 0;
+    values[index] = newValue;
     setInputFields(values);
   };
 
@@ -72,27 +92,6 @@ export default function Products() {
     const exclamation = e.currentTarget.nextSibling;
     exclamation.setAttribute('display', 'block');
     e.currentTarget.remove();
-  };
-
-  const handleDelete = async (e, id, index) => {
-    e.persist();
-    try {
-      setIsLoading(true);
-      await axios.delete(`/alunos/${id}`);
-      const novosAlunos = [...products];
-      novosAlunos.splice(index, 1);
-      setProducts(novosAlunos);
-      setIsLoading(false);
-    } catch (err) {
-      const status = get(err, 'response.status', 0);
-      if (status === 401) {
-        toast.error('Você precisa fazer login');
-      } else {
-        toast.error('Ocorreu um erro ao excluir aluno');
-      }
-
-      setIsLoading(false);
-    }
   };
 
   return (
@@ -131,7 +130,6 @@ export default function Products() {
                     <FaCarrot size={50} />
                   )}
                 </ProfilePicture>
-
                 <strong>{product.name}</strong>
                 <span>
                   Preço: {product.price}€/{product.priceunit}
@@ -139,12 +137,17 @@ export default function Products() {
                 <ProdAddBasket>
                   <QuantityDiv>
                     <NumberBox>
-                      <input type="number" name={product.id} />
+                      <input
+                        type="number"
+                        name={product.id}
+                        value={inputFields[index] || 0}
+                        onChange={(evt) => handleInputChange(index, evt)}
+                      />
                     </NumberBox>
                     <AddRemove>
-                      <Button onClick={(e) => {}}>+</Button>
+                      <Button onClick={() => handleInputBUp(index)}>+</Button>
                       <br />
-                      <Button type="submit">-</Button>
+                      <Button onClick={() => handleInputBDown(index)}>-</Button>
                     </AddRemove>
                   </QuantityDiv>
                   <IconBasket
