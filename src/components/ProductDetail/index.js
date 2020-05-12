@@ -18,8 +18,29 @@ import {
   IconBasket,
 } from './styled';
 
-export default function ProductDetail({ detailStatus, currentProd, close }) {
-  useEffect(() => {});
+export default function ProductDetail({
+  detailStatus,
+  currentProd,
+  currentIndex,
+  prodQty,
+  close,
+}) {
+  const [inputField, setInputField] = useState(0);
+
+  useEffect(() => {
+    setInputField(prodQty);
+  }, [prodQty]);
+
+  const handleInputBUp = () => {
+    const values = inputField + 1;
+    setInputField(values);
+  };
+
+  const handleInputBDown = () => {
+    let values = inputField - 1;
+    if (values < 0) values = 0;
+    setInputField(values);
+  };
 
   if (!detailStatus) return <></>;
   return (
@@ -27,7 +48,7 @@ export default function ProductDetail({ detailStatus, currentProd, close }) {
       <ProdBackColor />
       <ProdImage url={currentProd.Photo.url} />
       <ProdContainer>
-        <Close onClick={() => close()}>
+        <Close onClick={() => close(inputField)}>
           <strong>X</strong>
         </Close>
         <h1>{currentProd.name}</h1>
@@ -43,15 +64,14 @@ export default function ProductDetail({ detailStatus, currentProd, close }) {
             <NumberBox>
               <input
                 type="number"
-                name={currentProd.id}
-                value={0}
-                onChange={(evt) => {}}
+                value={inputField}
+                onChange={(evt) => setInputField(Math.abs(evt.target.value))}
               />
             </NumberBox>
             <AddRemove>
-              <Button onClick={() => {}}>+</Button>
+              <Button onClick={handleInputBUp}>+</Button>
               <br />
-              <Button onClick={() => {}}>-</Button>
+              <Button onClick={handleInputBDown}>-</Button>
             </AddRemove>
           </QuantityDiv>
           <IconBasket
@@ -69,11 +89,15 @@ export default function ProductDetail({ detailStatus, currentProd, close }) {
 ProductDetail.defaultProps = {
   detailStatus: false,
   currentProd: {},
+  currentIndex: 0,
+  prodQty: 0,
   close: () => {},
 };
 
 ProductDetail.propTypes = {
   detailStatus: Proptype.bool,
   currentProd: Proptype.shape({}),
+  currentIndex: Proptype.number,
+  prodQty: Proptype.number,
   close: Proptype.func,
 };

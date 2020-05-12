@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import { get } from 'lodash';
 import { FaShoppingCart, FaCarrot } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
 
-import { toast } from 'react-toastify';
+import * as actions from '../../store/modules/shopcart/actions';
+
+// import { toast } from 'react-toastify';
 import {
   ProductContainer,
   MiddleContainer,
@@ -25,6 +28,7 @@ import Loading from '../../components/Loading';
 import ProductDetail from '../../components/ProductDetail';
 
 export default function Products() {
+  const dispatch = useDispatch();
   const [products, setProducts] = useState([]);
   const [prodcats, setProdCats] = useState([]);
   const [prod, setProd] = useState(0);
@@ -33,6 +37,8 @@ export default function Products() {
   const [isLoading, setIsLoading] = useState(false);
   const [detailStatus, setDetailStatus] = useState(false);
   const [currentProd, setCurrentProd] = useState({});
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [prodQty, setProdQty] = useState(0);
 
   useEffect(() => {
     function setInputsInitial(length) {
@@ -90,16 +96,26 @@ export default function Products() {
     setInputFields(values);
   };
 
-  const handleClickDetail = (id) => {
+  const handleClickDetail = (id, index, qty) => {
     setCurrentProd(id);
+    setCurrentIndex(index);
+    setProdQty(qty);
     setDetailStatus(true);
   };
 
-  const handleDeleteAsk = (e) => {
-    e.preventDefault();
-    const exclamation = e.currentTarget.nextSibling;
-    exclamation.setAttribute('display', 'block');
-    e.currentTarget.remove();
+  const handleCloseDetail = (qty) => {
+    setDetailStatus(false);
+    const values = [...inputFields];
+    values[currentIndex] = Math.abs(qty);
+    setInputFields(values);
+    setCurrentProd({});
+    setCurrentIndex(0);
+    setProdQty(0);
+  };
+
+  const addItenCart = (index) => {
+    const prodID = products[index].id;
+    dispatch(actions.addIten({ prodID }));
   };
 
   return (
@@ -126,7 +142,9 @@ export default function Products() {
         <ProductDetail
           detailStatus={detailStatus}
           currentProd={currentProd}
-          close={() => setDetailStatus(false)}
+          currentIndex={currentIndex}
+          prodQty={Number(prodQty)}
+          close={(qty) => handleCloseDetail(qty)}
         />
         <h1>Produtos{prodTitle}:</h1>
 
@@ -136,7 +154,11 @@ export default function Products() {
           ) : (
             products.map((product, index) => (
               <ProductShow key={product.id}>
-                <ProfilePicture onClick={() => handleClickDetail(product)}>
+                <ProfilePicture
+                  onClick={() =>
+                    handleClickDetail(product, index, inputFields[index] || 0)
+                  }
+                >
                   {get(product, 'Photo.url', false) ? (
                     <img src={product.Photo.url} alt="" />
                   ) : (
@@ -163,10 +185,7 @@ export default function Products() {
                       <Button onClick={() => handleInputBDown(index)}>-</Button>
                     </AddRemove>
                   </QuantityDiv>
-                  <IconBasket
-                    onClick={handleDeleteAsk}
-                    to={`/aluno/${product.id}/delete`}
-                  >
+                  <IconBasket onClick={() => addItenCart(index)}>
                     <FaShoppingCart size={26} color="red" />
                   </IconBasket>
                 </ProdAddBasket>
