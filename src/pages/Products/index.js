@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { get } from 'lodash';
 import { FaShoppingCart, FaCarrot } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
@@ -113,9 +113,11 @@ export default function Products() {
     setProdQty(0);
   };
 
-  const addItenCart = (index) => {
-    const prodID = products[index].id;
-    dispatch(actions.addIten({ prodID }));
+  const addItenCart = (index, qtd) => {
+    if (qtd > 0) {
+      const prodID = products[index].id;
+      dispatch(actions.addIten({ prodID, qtd }));
+    }
   };
 
   return (
@@ -185,7 +187,9 @@ export default function Products() {
                       <Button onClick={() => handleInputBDown(index)}>-</Button>
                     </AddRemove>
                   </QuantityDiv>
-                  <IconBasket onClick={() => addItenCart(index)}>
+                  <IconBasket
+                    onClick={() => addItenCart(index, inputFields[index] || 0)}
+                  >
                     <FaShoppingCart size={26} color="red" />
                   </IconBasket>
                 </ProdAddBasket>

@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import * as colors from '../../config/colors';
 
 export const MainContainer = styled.section`
@@ -96,8 +95,9 @@ export const QuantityDiv = styled.div`
   display: flex;
 `;
 
-export const IconBasket = styled(Link)`
+export const IconBasket = styled.div`
   margin-left: 10px;
+  cursor: pointer;
 `;
 
 export const NumberBox = styled.div`

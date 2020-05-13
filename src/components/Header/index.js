@@ -33,24 +33,17 @@ export default function Header() {
           </Link>
         </NavLeft>
         <NavRight>
-          <Link to="/">
-            <FaHome size={20} />
-          </Link>
-          <Link to="/register">
-            <FaUserAlt size={20} />
-          </Link>
-
           {isLoggedIn ? (
             <Link onClick={handleLogout} to="/logout">
               <FaPowerOff size={20} />
             </Link>
           ) : (
             <Link to="/login">
-              <FaSignInAlt size={20} />
+              Iniciar Sessão <FaSignInAlt size={20} />
             </Link>
           )}
 
-          {isLoggedIn && <FaCircle size={20} color="#8EBB0F" />}
+          {isLoggedIn && <FaUserAlt size={20} />}
         </NavRight>
       </NavHeader>
     </Nav>

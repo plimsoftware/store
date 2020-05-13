@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { get } from 'lodash';
 import Proptype from 'prop-types';
 import { FaShoppingCart, FaCarrot } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
+
+import * as actions from '../../store/modules/shopcart/actions';
 
 import {
   ProdContainer,
@@ -26,6 +29,7 @@ export default function ProductDetail({
   close,
 }) {
   const [inputField, setInputField] = useState(0);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setInputField(prodQty);
@@ -40,6 +44,12 @@ export default function ProductDetail({
     let values = inputField - 1;
     if (values < 0) values = 0;
     setInputField(values);
+  };
+
+  const addItenCart = (prodID, qtd) => {
+    if (qtd > 0) {
+      dispatch(actions.addIten({ prodID, qtd }));
+    }
   };
 
   if (!detailStatus) return <></>;
@@ -74,10 +84,7 @@ export default function ProductDetail({
               <Button onClick={handleInputBDown}>-</Button>
             </AddRemove>
           </QuantityDiv>
-          <IconBasket
-            onClick={(evt) => {}}
-            to={`/aluno/${currentProd.id}/delete`}
-          >
+          <IconBasket onClick={() => addItenCart(currentProd.id, inputField)}>
             <FaShoppingCart size={26} color="red" />
           </IconBasket>
         </ProdAddBasket>

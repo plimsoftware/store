@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import * as colors from '../../config/colors';
 
 export const Container = styled.div`
@@ -171,6 +170,7 @@ export const Button = styled.button`
   cursor: pointer;
 `;
 
-export const IconBasket = styled(Link)`
+export const IconBasket = styled.div`
   margin-left: 10px;
+  cursor: pointer;
 `;
