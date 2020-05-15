@@ -20,6 +20,7 @@ export const Title = styled.h1`
   justify-content: center;
   align-items: center;
   font-size: 30px;
+  margin-bottom: 50px;
 `;
 
 export const ContainerLogin = styled.section`

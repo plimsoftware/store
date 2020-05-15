@@ -1,7 +1,7 @@
 import * as types from '../types';
 
 const initalState = {
-  cartItens: [{}],
+  cartItens: [],
 };
 
 export default function (state = initalState, action) {
@@ -22,7 +22,11 @@ export default function (state = initalState, action) {
       const newState = {
         cartItens: [
           ...state.cartItens,
-          { id: action.payload.prodID, qtd: action.payload.qtd },
+          {
+            id: action.payload.prodID,
+            name: action.payload.name,
+            qtd: action.payload.qtd,
+          },
         ],
       };
       return newState;

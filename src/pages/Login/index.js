@@ -43,7 +43,6 @@ export default function Login(props) {
       <ContainerLogin>
         <Loading isLoading={isLoading} />
         <Title>Administração da Loja</Title>
-        <h1>Login</h1>
 
         <Form onSubmit={handleSubmit}>
           <input

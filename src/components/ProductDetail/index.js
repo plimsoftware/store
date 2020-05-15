@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { get } from 'lodash';
 import Proptype from 'prop-types';
-import { FaShoppingCart, FaCarrot } from 'react-icons/fa';
+import { FaShoppingCart } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 
 import * as actions from '../../store/modules/shopcart/actions';
@@ -10,7 +9,6 @@ import {
   ProdContainer,
   Container,
   Close,
-  ProfilePicture,
   ProdImage,
   ProdAddBasket,
   ProdBackColor,
@@ -24,7 +22,6 @@ import {
 export default function ProductDetail({
   detailStatus,
   currentProd,
-  currentIndex,
   prodQty,
   close,
 }) {
@@ -46,9 +43,9 @@ export default function ProductDetail({
     setInputField(values);
   };
 
-  const addItenCart = (prodID, qtd) => {
+  const addItenCart = (prodID, name, qtd) => {
     if (qtd > 0) {
-      dispatch(actions.addIten({ prodID, qtd }));
+      dispatch(actions.addIten({ prodID, name, qtd }));
     }
   };
 
@@ -84,7 +81,11 @@ export default function ProductDetail({
               <Button onClick={handleInputBDown}>-</Button>
             </AddRemove>
           </QuantityDiv>
-          <IconBasket onClick={() => addItenCart(currentProd.id, inputField)}>
+          <IconBasket
+            onClick={() =>
+              addItenCart(currentProd.id, currentProd.name, inputField)
+            }
+          >
             <FaShoppingCart size={26} color="red" />
           </IconBasket>
         </ProdAddBasket>
@@ -96,15 +97,22 @@ export default function ProductDetail({
 ProductDetail.defaultProps = {
   detailStatus: false,
   currentProd: {},
-  currentIndex: 0,
   prodQty: 0,
   close: () => {},
 };
 
 ProductDetail.propTypes = {
   detailStatus: Proptype.bool,
-  currentProd: Proptype.shape({}),
-  currentIndex: Proptype.number,
+  currentProd: Proptype.shape({
+    id: Proptype.number,
+    priceunit: Proptype.string,
+    price: Proptype.number,
+    name: Proptype.string,
+    long_desc: Proptype.string,
+    Photo: Proptype.shape({
+      url: Proptype.string,
+    }),
+  }),
   prodQty: Proptype.number,
   close: Proptype.func,
 };

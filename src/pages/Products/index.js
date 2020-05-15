@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { get } from 'lodash';
 import { FaShoppingCart, FaCarrot } from 'react-icons/fa';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import * as actions from '../../store/modules/shopcart/actions';
 
@@ -23,22 +23,25 @@ import {
   Button,
 } from './styled';
 import axios from '../../services/axios';
-
 import Loading from '../../components/Loading';
 import ProductDetail from '../../components/ProductDetail';
+import Basket from '../../components/Basket';
 
 export default function Products() {
   const dispatch = useDispatch();
-  const [products, setProducts] = useState([]);
-  const [prodcats, setProdCats] = useState([]);
-  const [prod, setProd] = useState(0);
-  const [prodTitle, setProdTitle] = useState('');
-  const [inputFields, setInputFields] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [detailStatus, setDetailStatus] = useState(false);
-  const [currentProd, setCurrentProd] = useState({});
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [products, setProducts] = useState([]); // Lista Produtos
+  const [prodcats, setProdCats] = useState([]); // Lista Menu
+  const [prodcat, setProdCat] = useState(0); // Menu Corrente
+  const [prodTitle, setProdTitle] = useState(''); // Menu Título
+  const [inputFields, setInputFields] = useState([]); // Campos quantidade
+  const [isLoading, setIsLoading] = useState(false); // isLoading
+  const [detailStatus, setDetailStatus] = useState(false); // Janela detalhes
+  const [currentProd, setCurrentProd] = useState({}); // Produto seleccionado
+  const [currentIndex, setCurrentIndex] = useState(0); // Produto seleccionado (index)
   const [prodQty, setProdQty] = useState(0);
+  const [totalBasket, setTotalBasket] = useState(0);
+  const [cartItens, setCartItens] = useState([]); // Lista Produtos Cart
+  const cartItenstmp = useSelector((state) => state.shopcart.cartItens);
 
   useEffect(() => {
     function setInputsInitial(length) {
@@ -51,12 +54,12 @@ export default function Products() {
 
     async function getData() {
       setIsLoading(true);
-      if (prod === 0) {
+      if (prodcat === 0) {
         const response = await axios.get('/product');
         setProducts(response.data);
         setInputsInitial(response.data.length);
       } else {
-        const response = await axios.get(`/product/?id=${prod}`);
+        const response = await axios.get(`/product/?id=${prodcat}`);
         setProducts(response.data);
         setInputsInitial(response.data.length);
       }
@@ -71,7 +74,19 @@ export default function Products() {
     }
 
     getDataMenu();
-  }, [prod, prodTitle]);
+
+    function getBasket() {
+      let totalQtd = 0;
+      for (let i = 0; i < cartItens.length; i += 1) {
+        totalQtd += cartItens[i].qtd;
+      }
+
+      setTotalBasket(totalQtd);
+      setCartItens(cartItenstmp);
+    }
+
+    getBasket();
+  }, [prodcat, prodTitle, cartItens, cartItenstmp]);
 
   const handleInputChange = (index, evt) => {
     const values = [...inputFields];
@@ -113,10 +128,20 @@ export default function Products() {
     setProdQty(0);
   };
 
-  const addItenCart = (index, qtd) => {
+  const handleTotalBasket = () => {
+    let totalQtd = 0;
+    for (let i = 0; i < cartItens.length; i += 1) {
+      totalQtd += cartItens[i].qtd;
+    }
+
+    setTotalBasket(totalQtd);
+  };
+
+  const addItenCart = (index, name, qtd) => {
     if (qtd > 0) {
       const prodID = products[index].id;
-      dispatch(actions.addIten({ prodID, qtd }));
+      dispatch(actions.addIten({ prodID, name, qtd }));
+      handleTotalBasket();
     }
   };
 
@@ -124,17 +149,17 @@ export default function Products() {
     <MainContainer>
       <MenuContainer>
         <ul>
-          <MenuItem key="0" onClick={() => (setProd(0), setProdTitle(''))}>
+          <MenuItem key="0" onClick={() => (setProdCat(0), setProdTitle(''))}>
             Todos
           </MenuItem>
-          {prodcats.map((prodcat) => (
+          {prodcats.map((prodcate) => (
             <MenuItem
-              key={String(prodcat.id)}
+              key={String(prodcate.id)}
               onClick={() => (
-                setProd(prodcat.id), setProdTitle(`(${prodcat.name})`)
+                setProdCat(prodcate.id), setProdTitle(`(${prodcate.name})`)
               )}
             >
-              {prodcat.name}
+              {prodcate.name}
             </MenuItem>
           ))}
         </ul>
@@ -144,10 +169,10 @@ export default function Products() {
         <ProductDetail
           detailStatus={detailStatus}
           currentProd={currentProd}
-          currentIndex={currentIndex}
           prodQty={Number(prodQty)}
           close={(qty) => handleCloseDetail(qty)}
         />
+        <Basket totalBasket={totalBasket} cartItens={cartItens} />
         <h1>Produtos{prodTitle}:</h1>
 
         <ProductContainer>
@@ -188,7 +213,9 @@ export default function Products() {
                     </AddRemove>
                   </QuantityDiv>
                   <IconBasket
-                    onClick={() => addItenCart(index, inputFields[index] || 0)}
+                    onClick={() =>
+                      addItenCart(index, product.name, inputFields[index] || 0)
+                    }
                   >
                     <FaShoppingCart size={26} color="red" />
                   </IconBasket>
