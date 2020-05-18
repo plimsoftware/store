@@ -6,3 +6,10 @@ export function addIten(payload) {
     payload,
   };
 }
+
+export function removeIten(id) {
+  return {
+    type: types.REMOVE_ITEN,
+    id,
+  };
+}

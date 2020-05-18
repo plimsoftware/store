@@ -75,7 +75,7 @@ export default function Products() {
 
     getDataMenu();
 
-    function getBasket() {
+    /* function getBasket() {
       let totalQtd = 0;
       for (let i = 0; i < cartItens.length; i += 1) {
         totalQtd += cartItens[i].qtd;
@@ -86,6 +86,8 @@ export default function Products() {
     }
 
     getBasket();
+
+    */
   }, [prodcat, prodTitle, cartItens, cartItenstmp]);
 
   const handleInputChange = (index, evt) => {
@@ -172,7 +174,7 @@ export default function Products() {
           prodQty={Number(prodQty)}
           close={(qty) => handleCloseDetail(qty)}
         />
-        <Basket totalBasket={totalBasket} cartItens={cartItens} />
+        <Basket cartItens={cartItens} />
         <h1>Produtos{prodTitle}:</h1>
 
         <ProductContainer>

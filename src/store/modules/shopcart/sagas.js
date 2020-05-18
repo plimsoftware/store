@@ -5,11 +5,23 @@ import * as types from '../types';
 
 function addIten({ payload }) {
   try {
-    // yield put(actions.ClicaBotaoSuccess());
+    //
   } catch {
     toast.error('Deu erro');
     // yield put(actions.ClicaBotaoFailure());
   }
 }
 
-export default all([takeLatest(types.ADD_ITEN, addIten)]);
+function* removeIten({ id }) {
+  try {
+    yield put(actions.removeIten(id));
+  } catch {
+    toast.error('Deu erro');
+    // yield put(actions.ClicaBotaoFailure());
+  }
+}
+
+export default all([
+  takeLatest(types.ADD_ITEN, addIten),
+  takeLatest(types.REMOVE_ITEN, removeIten),
+]);
