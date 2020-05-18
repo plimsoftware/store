@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import Proptype from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaShoppingCart, FaCaretRight, FaTimesCircle } from 'react-icons/fa';
 
@@ -21,7 +20,7 @@ export default function Basket() {
   };
 
   return (
-    <BasketContainer>
+    <BasketContainer totalItens={totalItens}>
       <div className="listaprodutos">
         <ul>
           {cartItens ? (
@@ -50,17 +49,3 @@ export default function Basket() {
     </BasketContainer>
   );
 }
-
-Basket.defaultProps = {
-  cartItens: [],
-};
-
-Basket.propTypes = {
-  cartItens: Proptype.arrayOf(
-    Proptype.shape({
-      id: Proptype.number,
-      name: Proptype.string,
-      qtd: Proptype.number,
-    })
-  ),
-};

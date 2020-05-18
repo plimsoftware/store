@@ -39,8 +39,6 @@ export default function Products() {
   const [currentProd, setCurrentProd] = useState({}); // Produto seleccionado
   const [currentIndex, setCurrentIndex] = useState(0); // Produto seleccionado (index)
   const [prodQty, setProdQty] = useState(0);
-  // const [totalBasket, setTotalBasket] = useState(0);
-  // const [cartItens, setCartItens] = useState([]); // Lista Produtos Cart
   const cartItenstmp = useSelector((state) => state.shopcart.cartItens);
 
   useEffect(() => {
@@ -74,20 +72,6 @@ export default function Products() {
     }
 
     getDataMenu();
-
-    /* function getBasket() {
-      let totalQtd = 0;
-      for (let i = 0; i < cartItens.length; i += 1) {
-        totalQtd += cartItens[i].qtd;
-      }
-
-      setTotalBasket(totalQtd);
-      setCartItens(cartItenstmp);
-    }
-
-    getBasket();
-
-    */
   }, [prodcat, prodTitle, cartItenstmp]);
 
   const handleInputChange = (index, evt) => {
@@ -129,15 +113,6 @@ export default function Products() {
     setCurrentIndex(0);
     setProdQty(0);
   };
-
-  /* const handleTotalBasket = () => {
-    let totalQtd = 0;
-    for (let i = 0; i < cartItens.length; i += 1) {
-      totalQtd += cartItens[i].qtd;
-    }
-
-    setTotalBasket(totalQtd);
-  }; */
 
   const addItenCart = (index, name, qtd) => {
     if (qtd > 0) {
