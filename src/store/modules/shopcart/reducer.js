@@ -32,9 +32,15 @@ export default function (state = initalState, action) {
     }
 
     case types.REMOVE_ITEN: {
-      const qtdIten = state.cartItens.find((item) => action.id === item.id);
-      const newState = state.cartItens.filter((id) => id !== action.id);
-      newState.total -= qtdIten;
+      const qtdIten = state.cartItens.find(
+        (item) => item.id === Number(action.id)
+      );
+      const newState = { ...state };
+      newState.cartItens = newState.cartItens.filter(
+        (item) => item.id !== Number(action.id)
+      );
+
+      newState.total -= qtdIten.qtd;
       return newState;
     }
 

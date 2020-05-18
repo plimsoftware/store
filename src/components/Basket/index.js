@@ -6,9 +6,10 @@ import { FaShoppingCart, FaCaretRight, FaTimesCircle } from 'react-icons/fa';
 import { BasketContainer } from './styled';
 import * as actions from '../../store/modules/shopcart/actions';
 
-export default function ProductDetail({ totalBasket, cartItens }) {
+export default function Basket() {
   const dispatch = useDispatch();
   const totalItens = useSelector((state) => state.shopcart.total);
+  const cartItens = useSelector((state) => state.shopcart.cartItens);
 
   useEffect(() => {}, []);
 
@@ -16,7 +17,6 @@ export default function ProductDetail({ totalBasket, cartItens }) {
     const id = e.currentTarget.className.baseVal;
     if (id) {
       dispatch(actions.removeIten(id));
-      // handleTotalBasket();
     }
   };
 
@@ -24,20 +24,24 @@ export default function ProductDetail({ totalBasket, cartItens }) {
     <BasketContainer>
       <div className="listaprodutos">
         <ul>
-          {cartItens.map((itens) => (
-            <li key={itens.id}>
-              <span className="item">
-                <FaCaretRight size={12} /> {itens.name} x{itens.qtd}
-              </span>
-              <span className="botao">
-                <FaTimesCircle
-                  size={12}
-                  className={itens.id}
-                  onClick={(evt) => deleteItenCart(evt)}
-                />
-              </span>
-            </li>
-          ))}
+          {cartItens ? (
+            cartItens.map((itens) => (
+              <li key={itens.id}>
+                <span className="item">
+                  <FaCaretRight size={12} /> {itens.name} x{itens.qtd}
+                </span>
+                <span className="botao">
+                  <FaTimesCircle
+                    size={12}
+                    className={itens.id}
+                    onClick={(evt) => deleteItenCart(evt)}
+                  />
+                </span>
+              </li>
+            ))
+          ) : (
+            <span />
+          )}
         </ul>
       </div>
       <strong>
@@ -47,16 +51,16 @@ export default function ProductDetail({ totalBasket, cartItens }) {
   );
 }
 
-ProductDetail.defaultProps = {
-  totalBasket: 0,
+Basket.defaultProps = {
   cartItens: [],
 };
 
-ProductDetail.propTypes = {
-  totalBasket: Proptype.number,
-  cartItens: Proptype.shape({
-    id: Proptype.number,
-    name: Proptype.string,
-    qtd: Proptype.number,
-  }),
+Basket.propTypes = {
+  cartItens: Proptype.arrayOf(
+    Proptype.shape({
+      id: Proptype.number,
+      name: Proptype.string,
+      qtd: Proptype.number,
+    })
+  ),
 };

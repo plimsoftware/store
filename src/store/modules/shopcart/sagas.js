@@ -12,9 +12,9 @@ function addIten({ payload }) {
   }
 }
 
-function* removeIten({ id }) {
+function removeIten({ id }) {
   try {
-    yield put(actions.removeIten(id));
+    //
   } catch {
     toast.error('Deu erro');
     // yield put(actions.ClicaBotaoFailure());
