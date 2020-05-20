@@ -17,7 +17,7 @@ function* loginRequest({ payload }) {
 
     history.push(payload.prevPath);
   } catch (e) {
-    toast.error('User ou password inválida.');
+    toast.error('Email ou password inválida.');
 
     yield put(actions.loginFailure());
   }
@@ -32,25 +32,48 @@ function persistRehydrate({ payload }) {
 
 // eslint-disable-next-line consistent-return
 function* registerRequest({ payload }) {
-  const { id, nome, email, password } = payload;
+  const {
+    id,
+    name,
+    surname,
+    email,
+    address1,
+    address2,
+    location,
+    locationcp,
+    phone,
+    password,
+  } = payload;
 
   try {
     if (id) {
-      yield call(axios.put, '/users', {
+      yield call(axios.put, '/clients', {
+        name,
+        surname,
         email,
-        nome,
+        address1,
+        address2,
+        location,
+        locationcp,
+        phone,
         password: password || undefined,
       });
       toast.success('Conta alterada com sucesso.');
-      yield put(actions.registerUpdatedSuccess({ nome, email, password }));
+      yield put(actions.registerUpdatedSuccess({ name, email }));
     } else {
-      yield call(axios.post, '/users', {
+      yield call(axios.post, '/clients', {
+        name,
+        surname,
         email,
-        nome,
+        address1,
+        address2,
+        location,
+        locationcp,
+        phone,
         password,
       });
       toast.success('Conta criada com sucesso.');
-      yield put(actions.registerCreatedSuccess({ nome, email, password }));
+      yield put(actions.registerCreatedSuccess({ name, email }));
       history.push('/login');
     }
   } catch (e) {

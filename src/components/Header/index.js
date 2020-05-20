@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  FaHome,
-  FaSignInAlt,
-  FaUserAlt,
-  FaCircle,
-  FaPowerOff,
-} from 'react-icons/fa';
+import { FaSignInAlt, FaUserAlt, FaPowerOff } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -17,6 +11,7 @@ import logo from '../../img/logo.png';
 export default function Header() {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const tipo = 'cliente';
 
   const handleLogout = (e) => {
     e.preventDefault();
@@ -38,11 +33,10 @@ export default function Header() {
               <FaPowerOff size={20} />
             </Link>
           ) : (
-            <Link to="/login">
+            <Link to={`/login/${tipo}`}>
               Iniciar Sessão <FaSignInAlt size={20} />
             </Link>
           )}
-
           {isLoggedIn && <FaUserAlt size={20} />}
         </NavRight>
       </NavHeader>

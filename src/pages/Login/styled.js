@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import * as colors from '../../config/colors';
 
 export const Form = styled.form`
@@ -35,12 +36,31 @@ export const ContainerLogin = styled.section`
 
 export const Button = styled.button`
   cursor: pointer;
-  background: ${colors.primaryColor};
+  background: ${colors.primaryDarkColor};
   border: none;
   color: #fff;
   padding: 10px 20px;
   border-radius: 4px;
   font-weight: 700;
+  margin: 5px;
+  transition: all 300ms;
+
+  &:hover {
+    filter: brightness(75%);
+  }
+`;
+
+export const ButtonRes = styled(Link)`
+  cursor: pointer;
+  background: ${colors.primaryColor};
+  border: none;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 4px;
+  margin: 5px;
+  font-size: 13px;
+  font-weight: bold;
+  text-align: center;
   transition: all 300ms;
 
   &:hover {

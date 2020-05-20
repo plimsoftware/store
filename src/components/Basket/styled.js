@@ -50,6 +50,24 @@ export const BasketContainer = styled.div`
   }
 `;
 
+export const Avancar = styled.button`
+  background-color: red;
+  border: none;
+  color: white;
+  width: 150px;
+  height: 30px;
+  margin: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+
+  span {
+    font-weight: bold;
+    margin: 5px;
+  }
+`;
+
 export const Close = styled.button`
   z-index: 2;
   position: absolute;

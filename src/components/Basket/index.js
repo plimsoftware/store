@@ -1,14 +1,22 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { FaShoppingCart, FaCaretRight, FaTimesCircle } from 'react-icons/fa';
+import { toast } from 'react-toastify';
+import {
+  FaShoppingCart,
+  FaCaretRight,
+  FaTimesCircle,
+  FaCartArrowDown,
+} from 'react-icons/fa';
 
-import { BasketContainer } from './styled';
+import { BasketContainer, Avancar } from './styled';
 import * as actions from '../../store/modules/shopcart/actions';
+import history from '../../services/history';
 
 export default function Basket() {
   const dispatch = useDispatch();
   const totalItens = useSelector((state) => state.shopcart.total);
   const cartItens = useSelector((state) => state.shopcart.cartItens);
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
   useEffect(() => {}, []);
 
@@ -19,9 +27,28 @@ export default function Basket() {
     }
   };
 
+  const checkOut = () => {
+    if (totalItens === 0) {
+      toast.error('Sem produtos no carrinho.');
+      return;
+    }
+
+    if (!isLoggedIn) {
+      toast.error('Para avançar necessita iniciar sessão.');
+    }
+
+    history.push(`/checkout`);
+  };
+
   return (
     <BasketContainer totalItens={totalItens}>
       <div className="listaprodutos">
+        <Avancar onClick={checkOut}>
+          <span>
+            <FaCartArrowDown size={20} />
+          </span>
+          <span>Avançar</span>
+        </Avancar>
         <ul>
           {cartItens ? (
             cartItens.map((itens) => (

@@ -9,11 +9,15 @@ export default function PrivateRoute({
   ...rest
 }) {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const tipo = 'cliente';
 
   if (isClosed && !isLoggedIn) {
     return (
       <Redirect
-        to={{ pathname: '/login', state: { prevPath: rest.location.pathname } }}
+        to={{
+          pathname: `/login/${tipo}`,
+          state: { prevPath: rest.location.pathname },
+        }}
       />
     );
   }

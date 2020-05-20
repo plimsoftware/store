@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { get } from 'lodash';
-import { FaShoppingCart, FaCarrot } from 'react-icons/fa';
+import { FaCartPlus, FaCarrot } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { toast } from 'react-toastify';
 import * as actions from '../../store/modules/shopcart/actions';
-
-// import { toast } from 'react-toastify';
 import {
   ProductContainer,
   MiddleContainer,
@@ -63,15 +61,19 @@ export default function Products() {
       }
     }
 
-    getData();
-
     async function getDataMenu() {
       const response = await axios.get('/prodcat');
       setProdCats(response.data);
       setIsLoading(false);
     }
 
-    getDataMenu();
+    try {
+      getData();
+      getDataMenu();
+    } catch (err) {
+      const status = get(err, 'response.status', 0);
+      toast.error(`Erro ${status}`);
+    }
   }, [prodcat, prodTitle, cartItenstmp]);
 
   const handleInputChange = (index, evt) => {
@@ -153,7 +155,7 @@ export default function Products() {
         <h1>Produtos{prodTitle}:</h1>
 
         <ProductContainer>
-          {products.length === 0 ? (
+          {products.length === 0 || products == null ? (
             <strong>Sem produtos disponiveis nesta categoria.</strong>
           ) : (
             products.map((product, index) => (
@@ -194,7 +196,7 @@ export default function Products() {
                       addItenCart(index, product.name, inputFields[index] || 0)
                     }
                   >
-                    <FaShoppingCart size={26} color="red" />
+                    <FaCartPlus size={26} color="red" />
                   </IconBasket>
                 </ProdAddBasket>
               </ProductShow>

@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 
 import { primaryDarkColor } from '../../config/colors';
 
@@ -32,6 +31,7 @@ export const NavRight = styled.div`
   width: 66%;
   text-align: right;
   justify-items: flex-end;
+  color: white;
   align-content: center;
 
   a {

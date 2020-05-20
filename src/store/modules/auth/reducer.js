@@ -4,7 +4,7 @@ import axios from '../../../services/axios';
 const initalState = {
   isLoggedIn: false,
   token: false,
-  user: {},
+  client: {},
   isLoading: false,
 };
 
@@ -14,7 +14,7 @@ export default function (state = initalState, action) {
       const newState = { ...state };
       newState.isLoggedIn = true;
       newState.token = action.payload.token;
-      newState.user = action.payload.user;
+      newState.client = action.payload.client;
       newState.isLoading = false;
       return newState;
     }
@@ -39,7 +39,7 @@ export default function (state = initalState, action) {
 
     case types.REGISTER_UPDATED_SUCCESS: {
       const newState = { ...state };
-      newState.user.nome = action.payload.nome;
+      newState.user.name = action.payload.name;
       newState.user.email = action.payload.email;
       newState.isLoading = false;
       return newState;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Proptype from 'prop-types';
-import { FaShoppingCart } from 'react-icons/fa';
+import { FaCartPlus } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 
 import * as actions from '../../store/modules/shopcart/actions';
@@ -86,7 +86,7 @@ export default function ProductDetail({
               addItenCart(currentProd.id, currentProd.name, inputField)
             }
           >
-            <FaShoppingCart size={26} color="red" />
+            <FaCartPlus size={26} color="red" />
           </IconBasket>
         </ProdAddBasket>
       </ProdContainer>

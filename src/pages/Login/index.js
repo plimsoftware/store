@@ -1,24 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { isEmail } from 'validator';
 import { useDispatch, useSelector } from 'react-redux';
 import { get } from 'lodash';
 
 import Loading from '../../components/Loading';
-import { Form, Title, ContainerLogin, MainContainer, Button } from './styled';
+import {
+  Form,
+  Title,
+  ContainerLogin,
+  MainContainer,
+  Button,
+  ButtonRes,
+} from './styled';
 import * as actions from '../../store/modules/auth/actions';
 
 export default function Login(props) {
   const dispatch = useDispatch();
 
   const prevPath = get(props, 'location.state.prevPath', '/');
+  const tipo = get(props, 'match.params.tipo', '');
   const isLoading = useSelector((state) => state.auth.isLoading);
 
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleSubmit = (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
+
+    const userType = 'client';
     let formErrors = false;
 
     if (!isEmail(email)) {
@@ -30,20 +40,19 @@ export default function Login(props) {
     if (password.length < 6 || password.length > 50) {
       formErrors = true;
 
-      toast.error('Senha inválida');
+      toast.error('Password inválida');
     }
 
     if (formErrors) return;
 
-    dispatch(actions.loginRequest({ email, password, prevPath }));
-  };
+    dispatch(actions.loginRequest({ email, password, prevPath }, userType));
+  }
 
   return (
     <MainContainer>
       <ContainerLogin>
         <Loading isLoading={isLoading} />
-        <Title>Administração da Loja</Title>
-
+        <Title>{tipo ? 'Iniciar Sessão' : 'Acesso Administração'}</Title>
         <Form onSubmit={handleSubmit}>
           <input
             type="text"
@@ -58,6 +67,7 @@ export default function Login(props) {
             placeholder="Digite a sua password"
           />
           <Button type="submit">Entrar</Button>
+          {tipo && <ButtonRes to="/register">Criar novo Utilizador</ButtonRes>}
         </Form>
       </ContainerLogin>
     </MainContainer>
