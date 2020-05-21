@@ -55,7 +55,7 @@ export default function Products() {
         setProducts(response.data);
         setInputsInitial(response.data.length);
       } else {
-        const response = await axios.get(`/product/?id=${prodcat}`);
+        const response = await axios.get(`/product/?catid=${prodcat}`);
         setProducts(response.data);
         setInputsInitial(response.data.length);
       }
@@ -120,7 +120,6 @@ export default function Products() {
     if (qtd > 0) {
       const prodID = products[index].id;
       dispatch(actions.addIten({ prodID, name, qtd }));
-      // handleTotalBasket();
     }
   };
 
