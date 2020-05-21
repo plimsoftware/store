@@ -106,20 +106,6 @@ export const ProdContainer = styled.div`
   }
 `;
 
-export const ProfilePicture = styled.div`
-  svg {
-    margin-bottom: 45px;
-    align-items: center;
-  }
-
-  img {
-    width: 200px;
-    height: 150px;
-  }
-
-  cursor: pointer;
-`;
-
 export const ProdAddBasket = styled.section`
   font-size: 10px;
   position: absolute;
