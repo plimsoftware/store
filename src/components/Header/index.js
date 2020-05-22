@@ -30,14 +30,14 @@ export default function Header() {
         <NavRight>
           {isLoggedIn ? (
             <Link title="Sair sessão" onClick={handleLogout} to="/logout">
-              <FaPowerOff size={20} />
+              <FaPowerOff size={15} />
             </Link>
           ) : (
             <Link to={`/login/${tipo}`}>
-              Iniciar Sessão <FaSignInAlt size={20} />
+              Iniciar Sessão <FaSignInAlt size={15} />
             </Link>
           )}
-          {isLoggedIn && <FaUserAlt title="Perfil" size={20} />}
+          {isLoggedIn && <FaUserAlt title="Perfil" size={15} />}
         </NavRight>
       </NavHeader>
     </Nav>

@@ -6,7 +6,7 @@ export const BasketContainer = styled.div`
   height: 400px;
   padding-bottom: 13px;
   border-bottom-left-radius: 20px;
-  top: ${(props) => (Number(props.totalItens) > 0 ? '-270px' : '-350px')};
+  top: ${(props) => (Number(props.totalItens) > 0 ? '-290px' : '-370px')};
   right: 0;
   z-index: 1;
   display: flex;

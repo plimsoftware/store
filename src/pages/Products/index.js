@@ -151,7 +151,7 @@ export default function Products() {
           close={(qty) => handleCloseDetail(qty)}
         />
         <Basket />
-        <h1>Produtos{prodTitle}:</h1>
+        <h3>Produtos{prodTitle}:</h3>
 
         <ProductContainer>
           {products.length === 0 || products == null ? (

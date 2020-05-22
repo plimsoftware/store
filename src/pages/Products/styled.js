@@ -10,7 +10,7 @@ export const MainContainer = styled.section`
 export const MiddleContainer = styled.div`
   max-width: 100%;
   margin-left: 100px;
-  margin-top: 120px;
+  margin-top: 100px;
   width: 90%;
   background: #fff;
   padding: 20px;
@@ -20,10 +20,10 @@ export const MiddleContainer = styled.div`
 
 export const MenuContainer = styled.div`
   max-width: 250px;
-  left: -210px;
+  left: -175px;
   position: fixed;
   background: #fff;
-  margin-top: 120px;
+  margin-top: 100px;
   margin-right: 10px;
   padding: 20px;
   border-top-right-radius: 10px;
@@ -47,8 +47,8 @@ export const ProfilePicture = styled.div`
   }
 
   img {
-    width: 200px;
-    height: 150px;
+    width: 180px;
+    height: 130px;
   }
 
   cursor: pointer;
@@ -57,6 +57,7 @@ export const ProfilePicture = styled.div`
 export const ProductShow = styled.div`
   display: inline-flex;
   flex-direction: column;
+  font-size: 13px;
   margin-right: 15px;
   padding: 5px;
 
@@ -67,7 +68,7 @@ export const ProductShow = styled.div`
 `;
 
 export const MenuItem = styled.li`
-  font-size: 20px;
+  font-size: 15px;
   font-weight: bold;
   color: white;
   border: 0.5px solid;

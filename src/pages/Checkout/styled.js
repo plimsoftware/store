@@ -16,7 +16,7 @@ export const Container = styled.section`
   width: 1000px;
   background: #fff;
   margin: 20px auto;
-  margin-top: 120px;
+  margin-top: 100px;
   padding: 20px;
   border-radius: 4px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);

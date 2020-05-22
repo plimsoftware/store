@@ -21,8 +21,8 @@ export const NavLeft = styled.div`
   text-align: left;
 
   img {
-    width: 307px;
-    height: 75px;
+    width: 280px;
+    height: 56px;
     margin-top: 10px;
   }
 `;
@@ -31,6 +31,7 @@ export const NavRight = styled.div`
   width: 66%;
   text-align: right;
   justify-items: flex-end;
+  font-size: 15px;
   color: white;
   align-content: center;
 

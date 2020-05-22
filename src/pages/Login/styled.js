@@ -20,12 +20,12 @@ export const Title = styled.h1`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 30px;
+  font-size: 25px;
   margin-bottom: 50px;
 `;
 
 export const ContainerLogin = styled.section`
-  width: 600px;
+  width: 500px;
   background: #fff;
   margin: 20px auto;
   margin-top: 120px;

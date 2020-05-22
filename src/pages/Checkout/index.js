@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { get } from 'lodash';
-import { useDispatch, useSelector } from 'react-redux';
+import Proptype from 'prop-types';
+import { useSelector } from 'react-redux';
 import { FaCarrot } from 'react-icons/fa';
 
 import {
@@ -15,60 +16,95 @@ import {
 } from './styled';
 import axios from '../../services/axios';
 import Loading from '../../components/Loading';
-import * as actions from '../../store/modules/shopcart/actions';
 
 export default function CheckOut() {
+  const cartItens = useSelector((state) => state.shopcart.cartItens);
   const [isLoading, setIsLoading] = useState(false); // isLoading
   const [listProd, setListProd] = useState([]); // Lista produtos do Basket
-  const cartItens = useSelector((state) => state.shopcart.cartItens);
+  const [totalCompra, setTotalCompra] = useState(0);
+  const [totalIva, setTotalIva] = useState([]);
+  const [runGetData, setRunGetData] = useState(true);
 
   useEffect(() => {
-    const newList = [];
-    cartItens.map((itens) => {
-      newList.push(itens.id);
-
-      return newList;
-    });
-    const listURL = newList
-      .map((el, idx) => {
-        return `list[${idx}]=${el}`;
-      })
-      .join('&');
-
     async function getData() {
+      setRunGetData(false);
+      const newList = [];
+      cartItens.map((itens) => {
+        newList.push(itens.id);
+
+        return newList;
+      });
+      const listURL = newList
+        .map((el, idx) => {
+          return `list[${idx}]=${el}`;
+        })
+        .join('&');
       setIsLoading(true);
       const response = await axios.get(`/product/?${listURL}`);
       setListProd(response.data);
       setIsLoading(false);
     }
 
-    getData();
-  }, [cartItens]);
+    function ShowTotal() {
+      if (listProd.length === 0) return;
 
-  const getQtdos = (product) => {
+      let getTotal = totalCompra;
+      const getIva = [...totalIva];
+
+      listProd.forEach((prod) => {
+        const quantity = cartItens.find((item) => prod.id === item.id).qtd;
+        getTotal += prod.price * quantity;
+
+        const percent = getTotal * (prod.tax / 100);
+
+        if (getIva.length === 0) {
+          getIva.push({
+            tax: prod.tax,
+            total: Number(percent.toFixed(2)),
+          });
+        } else {
+          const index = getIva.indexOf(prod.tax);
+          if (index > -1) {
+            getIva[index].total += Number(percent.toFixed(2));
+          }
+        }
+      });
+      setTotalCompra(getTotal.toFixed(2));
+      setTotalIva(getIva);
+    }
+
+    if (runGetData) getData(ShowTotal);
+    ShowTotal();
+  }, [cartItens, listProd]);
+
+  function GetQtdos(props) {
+    const { product } = props;
     const quantity = cartItens.find((itemFind) => itemFind.id === product.id)
       .qtd;
 
     const priceQtd = product.price * quantity;
-    const percent = priceQtd * (product.tax / 100);
-    const finalPrice = (priceQtd + percent).toFixed(2);
+    const finalPrice = priceQtd.toFixed(2);
 
     return (
       <>
         <p>
           <strong>Quantidade: </strong>
-          {quantity} ({priceQtd.toFixed(2)}€)
+          {quantity}
         </p>
         <p>
-          <strong>Iva: </strong>
-          {product.tax}% ({percent.toFixed(2)}€)
-        </p>
-        <p>
-          <strong>Preço Final: </strong>
+          <strong>Preço final: </strong>
           {finalPrice}€
         </p>
       </>
     );
+  }
+
+  GetQtdos.defaultProps = {
+    product: {},
+  };
+
+  GetQtdos.propTypes = {
+    product: Proptype.shape([]),
   };
 
   return (
@@ -86,7 +122,7 @@ export default function CheckOut() {
                 </td>
               </tr>
             ) : (
-              listProd.map((product, index) => (
+              listProd.map((product) => (
                 <tr key={product.id}>
                   <ProfilePicture>
                     {get(product, 'Photo.url', false) ? (
@@ -102,16 +138,29 @@ export default function CheckOut() {
                   </Description>
                   <Price>
                     <p>
-                      <strong>Preço: </strong>
+                      <strong>Preço unitário: </strong>
                       {product.price}€/{product.priceunit}
                     </p>
-
-                    {getQtdos(product)}
+                    <GetQtdos product={product} />
                   </Price>
                   <td>remover</td>
                 </tr>
               ))
             )}
+            <tr>
+              <td>
+                <p>Preço final: {totalCompra}€ </p>
+              </td>
+            </tr>
+            {totalIva.map((iva) => (
+              <tr key={iva}>
+                <td>
+                  <p>
+                    Iva {iva.tax}%: {iva.total}€
+                  </p>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </Table>
       </Container>

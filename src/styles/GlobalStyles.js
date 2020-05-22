@@ -32,19 +32,24 @@ export default createGlobalStyle`
   }
 
   body .Toastify .Toastify__toast-container .Toastify__toast--success {
-    background: ${colors.sucessColor}
+    background: ${colors.sucessColor};
+    font-size: 13px;
+
   }
 
   body .Toastify .Toastify__toast-container .Toastify__toast--error {
-    background: ${colors.errorColor}
+    background: ${colors.errorColor};
+    font-size: 13px;
   }
 
   body .Toastify .Toastify__toast-container .Toastify__toast--warn {
-    background: ${colors.warningColor}
+    background: ${colors.warningColor};
+    font-size: 13px;
   }
 
   body .Toastify .Toastify__toast-container .Toastify__toast--info {
-    background: ${colors.infoColor}
+    background: ${colors.infoColor};
+    font-size: 13px;
   }
 `;
 

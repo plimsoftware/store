@@ -9,12 +9,13 @@ export const Form = styled.form`
   label {
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
+    font-size: 15px;
   }
 
   input {
     height: 30px;
-    font-size: 15px;
+    font-size: 13px;
     border: 1px solid #ddd;
     padding: 0 10px;
     border-radius: 5px;
@@ -45,14 +46,14 @@ export const Form = styled.form`
 export const Title = styled.h1`
   text-align: center;
   padding: 10px;
-  font-size: 30px;
+  font-size: 25px;
 `;
 
 export const Container = styled.section`
   width: 600px;
   background: #fff;
   margin: 20px auto;
-  margin-top: 120px;
+  margin-top: 100px;
   padding: 20px;
   border-radius: 4px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);

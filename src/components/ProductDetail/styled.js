@@ -80,14 +80,14 @@ export const ProdContainer = styled.div`
   h1 {
     margin-top: 15px;
     margin-left: 20px;
-    font-size: 30px;
+    font-size: 25px;
   }
 
   h2 {
     margin-left: 20px;
     margin-right: 20px;
     margin-top: 20px;
-    font-size: 20px;
+    font-size: 15px;
     font-weight: normal;
   }
 
@@ -102,7 +102,7 @@ export const ProdContainer = styled.div`
     margin-top: 40px;
     margin-right: 20px;
     float: right;
-    font-size: 20px;
+    font-size: 15px;
   }
 `;
 
