@@ -16,7 +16,7 @@ export default function (state = initalState, action) {
         if (index > -1) {
           const newState = { ...state };
           newState.cartItens[index].qtd += action.payload.qtd;
-          newState.total += action.payload.qtd;
+          if (action.payload.qtd !== 0) newState.total += action.payload.qtd;
           return newState;
         }
       }
@@ -39,8 +39,7 @@ export default function (state = initalState, action) {
       newState.cartItens = newState.cartItens.filter(
         (item) => item.id !== Number(action.id)
       );
-
-      newState.total -= qtdIten.qtd;
+      if (qtdIten) newState.total -= qtdIten.qtd;
       return newState;
     }
 
