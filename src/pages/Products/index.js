@@ -127,15 +127,22 @@ export default function Products() {
     <MainContainer>
       <MenuContainer>
         <ul>
-          <MenuItem key="0" onClick={() => (setProdCat(0), setProdTitle(''))}>
+          <MenuItem
+            key="0"
+            onClick={() => {
+              setProdCat(0);
+              setProdTitle('');
+            }}
+          >
             Todos
           </MenuItem>
           {prodcats.map((prodcate) => (
             <MenuItem
               key={String(prodcate.id)}
-              onClick={() => (
-                setProdCat(prodcate.id), setProdTitle(`(${prodcate.name})`)
-              )}
+              onClick={() => {
+                setProdCat(prodcate.id);
+                setProdTitle(`(${prodcate.name})`);
+              }}
             >
               {prodcate.name}
             </MenuItem>

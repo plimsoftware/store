@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { get } from 'lodash';
 import Proptype from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { FaCarrot, FaTimesCircle } from 'react-icons/fa';
+import { FaCarrot, FaTimesCircle, FaChevronCircleRight } from 'react-icons/fa';
 
 import {
   Title,
@@ -21,6 +21,12 @@ import {
   Total,
   Etapa,
   EtapaText,
+  EtapaHolder,
+  EtapaCont,
+  EtapaOff,
+  EtapaTextOff,
+  Avancar,
+  Botton,
 } from './styled';
 import axios from '../../services/axios';
 import Loading from '../../components/Loading';
@@ -32,7 +38,7 @@ export default function CheckOut() {
   const [isLoading, setIsLoading] = useState(false); // isLoading
   const [listProd, setListProd] = useState([]); // Lista produtos do Basket
   const [totalCompra, setTotalCompra] = useState(0);
-  // const [totalIva, setTotalIva] = useState([]);
+  const [etapa, setEtapa] = useState(1);
   const [runGetData, setRunGetData] = useState(true);
   const [inputFields, setInputFields] = useState([]); // Campos quantidade
 
@@ -167,12 +173,10 @@ export default function CheckOut() {
 
     dispatch(actions.addIten({ prodID, name, qtd }));
     ShowTotal();
-    // if (qtd === 0) dispatch(actions.removeIten(id));
   };
 
   const deleteItenCart = (e) => {
     const id = e.currentTarget.name;
-    console.log(id);
     if (id) {
       dispatch(actions.removeIten(id));
       cartItens = 0;
@@ -186,26 +190,65 @@ export default function CheckOut() {
       <Container>
         <TitleHeader>Checkout</TitleHeader>
         <Title>Faça a revisão das suas compras antes de avançar</Title>
-        <div>
-          <span>
-            <Etapa>1</Etapa>
-          </span>
-          <span>
-            <EtapaText>Revisão</EtapaText>
-          </span>
-          <span>
-            <Etapa>2</Etapa>
-          </span>
-          <span>
-            <EtapaText>Dados envio</EtapaText>
-          </span>
-          <span>
-            <Etapa>3</Etapa>
-          </span>
-          <span>
-            <EtapaText>Pagamento</EtapaText>
-          </span>
-        </div>
+        <EtapaHolder>
+          {etapa === 1 ? (
+            <EtapaCont>
+              <span>
+                <Etapa>1</Etapa>
+              </span>
+              <span>
+                <EtapaText>Revisão</EtapaText>
+              </span>
+            </EtapaCont>
+          ) : (
+            <EtapaCont>
+              <span>
+                <EtapaOff>1</EtapaOff>
+              </span>
+              <span>
+                <EtapaTextOff>Revisão</EtapaTextOff>
+              </span>
+            </EtapaCont>
+          )}
+          {etapa === 2 ? (
+            <EtapaCont>
+              <span>
+                <Etapa>2</Etapa>
+              </span>
+              <span>
+                <EtapaText>Dados envio</EtapaText>
+              </span>
+            </EtapaCont>
+          ) : (
+            <EtapaCont>
+              <span>
+                <EtapaOff>2</EtapaOff>
+              </span>
+              <span>
+                <EtapaTextOff>Dados envio</EtapaTextOff>
+              </span>
+            </EtapaCont>
+          )}
+          {etapa === 3 ? (
+            <EtapaCont>
+              <span>
+                <Etapa>3</Etapa>
+              </span>
+              <span>
+                <EtapaText>Pagamento</EtapaText>
+              </span>
+            </EtapaCont>
+          ) : (
+            <EtapaCont>
+              <span>
+                <EtapaOff>3</EtapaOff>
+              </span>
+              <span>
+                <EtapaTextOff>Pagamento</EtapaTextOff>
+              </span>
+            </EtapaCont>
+          )}
+        </EtapaHolder>
         <Table>
           <tbody>
             {listProd.length === 0 || listProd == null ? (
@@ -283,6 +326,13 @@ export default function CheckOut() {
         <Total>
           <p>Preço final: {totalCompra}€ </p>
         </Total>
+        <Botton>
+          <Avancar type="submit">
+            <span className="letras">Avançar</span>
+            <span className="back">O</span>
+            <FaChevronCircleRight className="BotAvanc" size={24} />
+          </Avancar>
+        </Botton>
       </Container>
     </MainContainer>
   );

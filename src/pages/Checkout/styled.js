@@ -129,13 +129,30 @@ export const Remover = styled.button`
 `;
 
 export const Total = styled.div`
-  margin-top: 20px;
-  font-size: 18px;
+  margin-top: 30px;
+  font-size: 17px;
   text-align: right;
+  border-top: 1px solid;
+  padding-top: 15px;
+`;
+
+export const EtapaHolder = styled.section`
+  margin-top: 15px;
+  justify-self: center;
+  width: 100%;
+  display: grid;
+  grid-auto-flow: column;
+  justify-items: center;
+`;
+
+export const EtapaCont = styled.div`
+  display: inline;
+  justify-content: center;
+  vertical-align: middle;
 `;
 
 export const Etapa = styled.div`
-  margin: 10px;
+  margin: 10px 0px 10px 10px;
   background-color: red;
   border-radius: 50%;
   display: inline-flex;
@@ -144,21 +161,99 @@ export const Etapa = styled.div`
   color: white;
   font-weight: bold;
 
-  font-size: 25px;
-  width: 45px;
-  height: 45px;
+  font-size: 20px;
+  width: 40px;
+  height: 40px;
 `;
 
-export const EtapaText = styled.div`
-  margin: 10px;
-  background-color: red;
+export const EtapaOff = styled.div`
+  margin: 10px 0px 10px 10px;
+  background-color: #c7c7c7;
+  border-radius: 50%;
   display: inline-flex;
   justify-content: center;
   align-items: center;
   color: white;
   font-weight: bold;
 
-  font-size: 15px;
-  width: 200px;
-  height: 30px;
+  font-size: 17px;
+  width: 37px;
+  height: 37px;
+`;
+
+export const EtapaText = styled.div`
+  margin: 10px 10px 10px 0px;
+  background-color: red;
+  border-radius: 5px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  width: 180px;
+  height: 25px;
+`;
+
+export const EtapaTextOff = styled.div`
+  margin: 10px 10px 10px 0px;
+  background-color: #c7c7c7;
+  border-radius: 5px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+  font-size: 11px;
+  width: 180px;
+  height: 25px;
+`;
+
+export const Botton = styled.div`
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+`;
+
+export const Avancar = styled.button`
+  border: none;
+  display: flex;
+  cursor: pointer;
+  color: red;
+  float: right;
+  position: relative;
+  right: 0;
+
+  .BotAvanc {
+    z-index: 3;
+    color: red;
+    position: absolute;
+    float: right;
+    right: 0;
+  }
+
+  .back {
+    z-index: 2;
+    background-color: white;
+    color: white;
+    width: 22px;
+    font-size: 20px;
+    border-radius: 50%;
+    float: right;
+    position: absolute;
+    right: 0;
+  }
+
+  .letras {
+    background-color: red;
+    float: right;
+    z-index: 1;
+    padding: 5px;
+    padding-right: 12px;
+    font-size: 12px;
+    position: absolute;
+    right: 13px;
+
+    color: white;
+  }
 `;
