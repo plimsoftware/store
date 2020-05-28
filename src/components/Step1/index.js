@@ -36,11 +36,11 @@ import {
   Botton,
 } from './styled';
 import axios from '../../services/axios';
-import Loading from '../../components/Loading';
+import Loading from '../Loading';
 import * as actions from '../../store/modules/shopcart/actions';
 import history from '../../services/history';
 
-export default function CheckOut() {
+export default function Step1() {
   const dispatch = useDispatch();
   let cartItens = useSelector((state) => state.shopcart.cartItens);
   const [isLoading, setIsLoading] = useState(false); // isLoading
