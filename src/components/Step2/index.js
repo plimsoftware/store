@@ -20,7 +20,7 @@ import axios from '../../services/axios';
 import Loading from '../Loading';
 import * as actions from '../../store/modules/shopcart/actions';
 
-export default function Step1({ getDataStep1 }) {
+export default function Step2({ getDataStep1 }) {
   const dispatch = useDispatch();
   let cartItens = useSelector((state) => state.shopcart.cartItens);
   const [isLoading, setIsLoading] = useState(false); // isLoading
@@ -175,93 +175,17 @@ export default function Step1({ getDataStep1 }) {
   return (
     <>
       <Loading isLoading={isLoading} />
-      <Table>
-        <tbody>
-          {listProd.length === 0 || listProd == null ? (
-            <tr>
-              <td>
-                <strong>Carrinho sem produtos.</strong>
-              </td>
-            </tr>
-          ) : (
-            listProd.map((product, index) => (
-              <tr key={product.id}>
-                <ProfilePicture>
-                  {get(product, 'Photo.url', false) ? (
-                    <img src={product.Photo.url} alt="" />
-                  ) : (
-                    <FaCarrot size={50} />
-                  )}
-                </ProfilePicture>
-                <Description>
-                  <h4>{product.name}</h4>
-                  <br />
-                  <p>{product.short_desc}</p>
-                </Description>
-                <Price>
-                  <p>
-                    <strong>Preço unitário: </strong>
-                    {product.price}€/{product.priceunit}
-                  </p>
-                  <GetQtdos product={product} />
-                </Price>
-                <td>
-                  <QuantityDiv>
-                    <NumberBox>
-                      <input
-                        disabled
-                        type="number"
-                        name={product.id}
-                        value={inputFields[index] || 0}
-                        onChange={(evt) => handleInputChange(index, evt)}
-                      />
-                    </NumberBox>
-                    <AddRemove>
-                      <Button
-                        onClick={() =>
-                          handleInputBUp(index, product.id, product.name)
-                        }
-                      >
-                        +
-                      </Button>
-                      <br />
-                      <Button
-                        onClick={() =>
-                          handleInputBDown(index, product.id, product.name)
-                        }
-                      >
-                        -
-                      </Button>
-                    </AddRemove>
-                  </QuantityDiv>
-                </td>
-                <td>
-                  <Remover
-                    name={product.id}
-                    onClick={(evt) => deleteItenCart(evt)}
-                  >
-                    <FaTimesCircle size={15} />
-                    <span>Remover</span>
-                  </Remover>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </Table>
-      <Total>
-        <p>Preço final: {totalCompra}€ </p>
-      </Total>
+      <p>cheguei</p>
     </>
   );
 }
 
-Step1.defaultProps = {
+Step2.defaultProps = {
   product: {},
   getDataStep1: () => {},
 };
 
-Step1.propTypes = {
+Step2.propTypes = {
   product: Proptype.shape({
     id: Proptype.number,
     priceunit: Proptype.string,

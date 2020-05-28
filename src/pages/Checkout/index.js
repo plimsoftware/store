@@ -1,14 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-import { get } from 'lodash';
-import Proptype from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  FaCarrot,
-  FaTimesCircle,
-  FaChevronCircleRight,
-  FaChevronCircleLeft,
-} from 'react-icons/fa';
+import { FaChevronCircleRight, FaChevronCircleLeft } from 'react-icons/fa';
 
 import {
   Title,
@@ -16,15 +8,6 @@ import {
   Container,
   MainContainer,
   Table,
-  ProfilePicture,
-  Description,
-  Price,
-  QuantityDiv,
-  NumberBox,
-  AddRemove,
-  Button,
-  Remover,
-  Total,
   Etapa,
   EtapaText,
   EtapaHolder,
@@ -33,163 +16,17 @@ import {
   EtapaTextOff,
   Avancar,
   Voltar,
-  Botton,
 } from './styled';
-import axios from '../../services/axios';
-import Loading from '../../components/Loading';
-import * as actions from '../../store/modules/shopcart/actions';
+import Step1 from '../../components/Step1';
+import Step2 from '../../components/Step2';
 import history from '../../services/history';
 
 export default function CheckOut() {
-  const dispatch = useDispatch();
-  let cartItens = useSelector((state) => state.shopcart.cartItens);
-  const [isLoading, setIsLoading] = useState(false); // isLoading
-  const [listProd, setListProd] = useState([]); // Lista produtos do Basket
-  const [totalCompra, setTotalCompra] = useState(0);
   const [etapa, setEtapa] = useState(1);
-  const [runGetData, setRunGetData] = useState(true);
-  const [inputFields, setInputFields] = useState([]); // Campos quantidade
+  const [listProd, setListProd] = useState([]); // Lista produtos do Basket
 
-  function ShowTotal() {
-    if (listProd.length === 0) return;
-    let getTotal = 0;
-    const values = [...inputFields];
-
-    listProd.forEach((prod, index) => {
-      let quantity = cartItens.find((item) => prod.id === item.id);
-
-      if (quantity) {
-        quantity = quantity.qtd;
-      } else {
-        quantity = 0;
-      }
-
-      const prodQtd = prod.price * quantity;
-      getTotal += prodQtd;
-      getTotal.toFixed(2);
-      values[index] = quantity;
-    });
-    setInputFields(values);
-    setTotalCompra(getTotal.toFixed(2));
-  }
-
-  useEffect(() => {
-    function setInputsInitial(length) {
-      const newInputFields = [];
-      for (let i = 0; i < length; i += 1) {
-        newInputFields.push('0');
-      }
-      setInputFields(newInputFields);
-    }
-
-    async function getData() {
-      setRunGetData(false);
-
-      const newList = [];
-      cartItens.map((itens) => {
-        newList.push(itens.id);
-
-        return newList;
-      });
-      const listURL = newList
-        .map((el, idx) => {
-          return `list[${idx}]=${el}`;
-        })
-        .join('&');
-
-      if (cartItens.length === 0) {
-        setListProd([]);
-        return;
-      }
-      setIsLoading(true);
-      const response = await axios.get(`/product/?${listURL}`);
-
-      setListProd(response.data);
-
-      setInputsInitial(response.data.length);
-      setIsLoading(false);
-    }
-
-    if (runGetData) getData();
-    ShowTotal();
-  }, [cartItens, listProd]);
-
-  function GetQtdos(props) {
-    const { product } = props;
-    let quantity = cartItens.find((itemFind) => itemFind.id === product.id);
-
-    if (quantity) {
-      quantity = quantity.qtd;
-    } else {
-      quantity = 0;
-    }
-
-    const priceQtd = product.price * quantity;
-    const finalPrice = priceQtd.toFixed(2);
-
-    return (
-      <>
-        <p>
-          <strong>Quantidade: </strong>
-          {quantity}
-        </p>
-        <p>
-          <strong>Preço total: </strong>
-          {finalPrice}€
-        </p>
-      </>
-    );
-  }
-
-  GetQtdos.defaultProps = {
-    product: {},
-  };
-
-  GetQtdos.propTypes = {
-    product: Proptype.shape([]),
-  };
-
-  const handleInputChange = (index, evt) => {
-    const values = [...inputFields];
-    values[index] = Math.abs(evt.target.value);
-    setInputFields(values);
-  };
-
-  const handleInputBUp = (index, prodID, name) => {
-    const values = [...inputFields];
-    let newValue = Number(values[index]);
-    const qtd = 1;
-    newValue += 1;
-    values[index] = newValue;
-    setInputFields(values);
-
-    dispatch(actions.addIten({ prodID, name, qtd }));
-    ShowTotal();
-  };
-
-  const handleInputBDown = (index, prodID, name) => {
-    const values = [...inputFields];
-    let newValue = Number(values[index]);
-    let qtd = -1;
-    newValue -= 1;
-    if (newValue < 0) {
-      newValue = 0;
-      qtd = 0;
-    }
-    values[index] = newValue;
-    setInputFields(values);
-
-    dispatch(actions.addIten({ prodID, name, qtd }));
-    ShowTotal();
-  };
-
-  const deleteItenCart = (e) => {
-    const id = e.currentTarget.name;
-    if (id) {
-      dispatch(actions.removeIten(id));
-      cartItens = 0;
-    }
-    setRunGetData(true);
+  const getDataStep1 = (dataFromStep1) => {
+    setListProd(dataFromStep1);
   };
 
   const handleStepBack = () => {
@@ -198,8 +35,10 @@ export default function CheckOut() {
         history.push('/');
         break;
       case 2:
+        setEtapa(1);
         break;
       case 3:
+        setEtapa(2);
         break;
       default:
         break;
@@ -214,8 +53,10 @@ export default function CheckOut() {
           history.push('/');
           break;
         }
+        setEtapa(2);
         break;
       case 2:
+        setEtapa(3);
         break;
       case 3:
         break;
@@ -226,10 +67,14 @@ export default function CheckOut() {
 
   return (
     <MainContainer>
-      <Loading isLoading={isLoading} />
       <Container>
         <TitleHeader>Checkout</TitleHeader>
-        <Title>Faça a revisão das suas compras antes de avançar</Title>
+        {etapa === 1 && (
+          <Title>Faça a revisão das suas compras antes de avançar</Title>
+        )}
+        {etapa === 2 && (
+          <Title>Verifique os seus dados para envio da encomenda</Title>
+        )}
         <EtapaHolder>
           {etapa === 1 ? (
             <EtapaCont>
@@ -289,83 +134,8 @@ export default function CheckOut() {
             </EtapaCont>
           )}
         </EtapaHolder>
-        <Table>
-          <tbody>
-            {listProd.length === 0 || listProd == null ? (
-              <tr>
-                <td>
-                  <strong>Carrinho sem produtos.</strong>
-                </td>
-              </tr>
-            ) : (
-              listProd.map((product, index) => (
-                <tr key={product.id}>
-                  <ProfilePicture>
-                    {get(product, 'Photo.url', false) ? (
-                      <img src={product.Photo.url} alt="" />
-                    ) : (
-                      <FaCarrot size={50} />
-                    )}
-                  </ProfilePicture>
-                  <Description>
-                    <h4>{product.name}</h4>
-                    <br />
-                    <p>{product.short_desc}</p>
-                  </Description>
-                  <Price>
-                    <p>
-                      <strong>Preço unitário: </strong>
-                      {product.price}€/{product.priceunit}
-                    </p>
-                    <GetQtdos product={product} />
-                  </Price>
-                  <td>
-                    <QuantityDiv>
-                      <NumberBox>
-                        <input
-                          disabled
-                          type="number"
-                          name={product.id}
-                          value={inputFields[index] || 0}
-                          onChange={(evt) => handleInputChange(index, evt)}
-                        />
-                      </NumberBox>
-                      <AddRemove>
-                        <Button
-                          onClick={() =>
-                            handleInputBUp(index, product.id, product.name)
-                          }
-                        >
-                          +
-                        </Button>
-                        <br />
-                        <Button
-                          onClick={() =>
-                            handleInputBDown(index, product.id, product.name)
-                          }
-                        >
-                          -
-                        </Button>
-                      </AddRemove>
-                    </QuantityDiv>
-                  </td>
-                  <td>
-                    <Remover
-                      name={product.id}
-                      onClick={(evt) => deleteItenCart(evt)}
-                    >
-                      <FaTimesCircle size={15} />
-                      <span>Remover</span>
-                    </Remover>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </Table>
-        <Total>
-          <p>Preço final: {totalCompra}€ </p>
-        </Total>
+        {etapa === 1 && <Step1 getDataStep1={(list) => getDataStep1(list)} />}
+        {etapa === 2 && <Step2 />}
         <Table>
           <tbody>
             <tr>
@@ -390,7 +160,6 @@ export default function CheckOut() {
             </tr>
           </tbody>
         </Table>
-        <Botton />
       </Container>
     </MainContainer>
   );
