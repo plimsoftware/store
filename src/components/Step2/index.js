@@ -3,180 +3,264 @@ import { get } from 'lodash';
 import Proptype from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaCarrot, FaTimesCircle } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 
-import {
-  Table,
-  ProfilePicture,
-  Description,
-  Price,
-  QuantityDiv,
-  NumberBox,
-  AddRemove,
-  Button,
-  Remover,
-  Total,
-} from './styled';
+import { Form, Container, Separador1, Separador2, Checkbox } from './styled';
 import axios from '../../services/axios';
 import Loading from '../Loading';
 import * as actions from '../../store/modules/shopcart/actions';
+import history from '../../services/history';
 
 export default function Step2({ getDataStep1 }) {
   const dispatch = useDispatch();
-  let cartItens = useSelector((state) => state.shopcart.cartItens);
   const [isLoading, setIsLoading] = useState(false); // isLoading
-  const [listProd, setListProd] = useState([]); // Lista produtos do Basket
-  const [totalCompra, setTotalCompra] = useState(0);
-  const [runGetData, setRunGetData] = useState(true);
-  const [inputFields, setInputFields] = useState([]); // Campos quantidade
+  // const [runGetData, setRunGetData] = useState(true);
+  const [name, setName] = useState('');
+  const [surname, setSurNome] = useState('');
+  const [email, setEmail] = useState('');
+  const [address1, setAddress1] = useState('');
+  const [address2, setAddress2] = useState('');
+  const [location, setLocation] = useState('');
+  const [locationcp, setLocationcp] = useState('');
+  const [phone, setPhone] = useState(0);
+  const client = useSelector((state) => state.auth.client);
 
-  function ShowTotal() {
-    if (listProd.length === 0) return;
-    let getTotal = 0;
-    const values = [...inputFields];
-
-    listProd.forEach((prod, index) => {
-      let quantity = cartItens.find((item) => prod.id === item.id);
-
-      if (quantity) {
-        quantity = quantity.qtd;
-      } else {
-        quantity = 0;
-      }
-
-      const prodQtd = prod.price * quantity;
-      getTotal += prodQtd;
-      getTotal.toFixed(2);
-      values[index] = quantity;
-    });
-    setInputFields(values);
-    setTotalCompra(getTotal.toFixed(2));
-  }
+  const [address1Deliver, setAddress1Deliver] = useState('');
+  const [address2Deliver, setAddress2Deliver] = useState('');
+  const [locationDeliver, setLocationDeliver] = useState('');
+  const [locationcpDeliver, setLocationcpDeliver] = useState('');
 
   useEffect(() => {
-    function setInputsInitial(length) {
-      const newInputFields = [];
-      for (let i = 0; i < length; i += 1) {
-        newInputFields.push('0');
-      }
-      setInputFields(newInputFields);
-    }
-
     async function getData() {
-      setRunGetData(false);
+      // setRunGetData(false);
 
-      const newList = [];
-      cartItens.map((itens) => {
-        newList.push(itens.id);
+      try {
+        setIsLoading(true);
+        const { data } = await axios.get(`/clients/?${client.id}`);
 
-        return newList;
-      });
-      const listURL = newList
-        .map((el, idx) => {
-          return `list[${idx}]=${el}`;
-        })
-        .join('&');
+        setName(data[0].name);
+        setSurNome(data[0].surname);
+        setEmail(data[0].email);
+        setAddress1(data[0].address1);
+        setAddress2(data[0].address2);
+        setLocationcp(data[0].locationcp);
+        setLocation(data[0].location);
+        setPhone(data[0].phone);
+      } catch (err) {
+        setIsLoading(false);
+        const status = get(err, 'response.status', 0);
+        const errors = get(err, 'response.data.errors', []);
 
-      if (cartItens.length === 0) {
-        setListProd([]);
-        return;
+        if (status === 400) errors.map((error) => toast.error(error));
+        history.push('/');
       }
-      setIsLoading(true);
-      const response = await axios.get(`/product/?${listURL}`);
 
-      setListProd(response.data);
-
-      setInputsInitial(response.data.length);
       setIsLoading(false);
     }
 
-    if (runGetData) getData();
-    ShowTotal();
-    getDataStep1(listProd);
-  }, [cartItens, listProd]);
+    getData();
+  }, [client.id]);
 
-  function GetQtdos(props) {
-    const { product } = props;
-    let quantity = cartItens.find((itemFind) => itemFind.id === product.id);
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const regex = /^\d{4}(-\d{3})?$/;
 
-    if (quantity) {
-      quantity = quantity.qtd;
-    } else {
-      quantity = 0;
+    let formErrors = false;
+
+    if (address1Deliver.length < 5 || address1Deliver.length > 100) {
+      formErrors = true;
+
+      toast.error('Morada 1 deve ter entre 5 e 100 caracteres');
     }
 
-    const priceQtd = product.price * quantity;
-    const finalPrice = priceQtd.toFixed(2);
+    if (address2Deliver.length > 100) {
+      formErrors = true;
 
-    return (
-      <>
-        <p>
-          <strong>Quantidade: </strong>
-          {quantity}
-        </p>
-        <p>
-          <strong>Preço total: </strong>
-          {finalPrice}€
-        </p>
-      </>
-    );
+      toast.error('Morada 2 deve ter entre 5 e 100 caracteres');
+    }
+
+    if (locationDeliver.length < 3 || locationDeliver.length > 35) {
+      formErrors = true;
+
+      toast.error('Localidade deve ter entre 3 e 35 caracteres');
+    }
+
+    if (!regex.test(locationcpDeliver)) {
+      formErrors = true;
+
+      toast.error('Código Postal não está no formato correto ( 0000-000 )');
+    }
+
+    if (formErrors) return;
+
+    /* dispatch(
+      actions.registerRequest({
+        name,
+        surname,
+        email,
+        address1,
+        address2,
+        location,
+        locationcp,
+        phone,
+        password,
+        id,
+      })
+    ); */
   }
 
-  GetQtdos.defaultProps = {
-    product: {},
-  };
+  const handleAddress = (evt) => {
+    evt.persist();
 
-  GetQtdos.propTypes = {
-    product: Proptype.shape([]),
-  };
-
-  const handleInputChange = (index, evt) => {
-    const values = [...inputFields];
-    values[index] = Math.abs(evt.target.value);
-    setInputFields(values);
-  };
-
-  const handleInputBUp = (index, prodID, name) => {
-    const values = [...inputFields];
-    let newValue = Number(values[index]);
-    const qtd = 1;
-    newValue += 1;
-    values[index] = newValue;
-    setInputFields(values);
-
-    dispatch(actions.addIten({ prodID, name, qtd }));
-    ShowTotal();
-  };
-
-  const handleInputBDown = (index, prodID, name) => {
-    const values = [...inputFields];
-    let newValue = Number(values[index]);
-    let qtd = -1;
-    newValue -= 1;
-    if (newValue < 0) {
-      newValue = 0;
-      qtd = 0;
+    if (evt.currentTarget.checked) {
+      setAddress1Deliver(address1);
+      setAddress2Deliver(address2);
+      setLocationcpDeliver(locationcp);
+      setLocationDeliver(location);
+    } else {
+      setAddress1Deliver('');
+      setAddress2Deliver('');
+      setLocationcpDeliver('');
+      setLocationDeliver('');
     }
-    values[index] = newValue;
-    setInputFields(values);
-
-    dispatch(actions.addIten({ prodID, name, qtd }));
-    ShowTotal();
-  };
-
-  const deleteItenCart = (e) => {
-    const id = e.currentTarget.name;
-    if (id) {
-      dispatch(actions.removeIten(id));
-      cartItens = 0;
-    }
-    setRunGetData(true);
   };
 
   return (
-    <>
+    <Container>
       <Loading isLoading={isLoading} />
-      <p>cheguei</p>
-    </>
+      <Form>
+        <label htmlFor="nome">
+          Nome:
+          <input disabled readOnly type="text" className="nome" value={name} />
+        </label>
+        <label htmlFor="apelido">
+          Apelido:
+          <input
+            disabled
+            readOnly
+            type="text"
+            className="apelido"
+            value={surname}
+          />
+        </label>
+        <label htmlFor="email">
+          E-mail:
+          <input disabled readOnly type="email" value={email} />
+        </label>
+        <label htmlFor="morada1">
+          Morada:
+          <input
+            disabled
+            readOnly
+            type="text"
+            className="morada1"
+            value={address1}
+          />
+        </label>
+        <label htmlFor="morada2">
+          Morada (cont.):
+          <input
+            disabled
+            readOnly
+            type="text"
+            className="morada2"
+            value={address2}
+          />
+        </label>
+        <div>
+          <span className="local">
+            <label htmlFor="localidade">
+              Localidade:
+              <input
+                disabled
+                readOnly
+                type="text"
+                className="localidade"
+                value={location}
+              />
+            </label>
+          </span>
+          <span className="cp">
+            <label htmlFor="localidadecp">
+              Código Postal:
+              <input
+                disabled
+                readOnly
+                type="text"
+                className="localidadecp"
+                value={locationcp}
+              />
+            </label>
+          </span>
+        </div>
+        <label htmlFor="telefone">
+          Telefone:
+          <input
+            disabled
+            readOnly
+            type="number"
+            className="telefone"
+            value={phone}
+          />
+        </label>
+        <Separador1 />
+        <Separador2 />
+        <Checkbox>
+          <input
+            type="checkbox"
+            className="moradaEntrega"
+            onChange={handleAddress}
+          />
+          <span>Usar morada associada ao cliente</span>
+        </Checkbox>
+        <label htmlFor="morada1">
+          Morada de entrega:
+          <input
+            type="text"
+            className="morada1"
+            value={address1Deliver}
+            placeholder="Digite a sua morada"
+            onChange={(e) => setAddress1Deliver(e.target.value)}
+          />
+        </label>
+        <label htmlFor="morada2">
+          Morada de entrega (cont.):
+          <input
+            type="text"
+            className="morada2"
+            value={address2Deliver}
+            placeholder="Digite a sua morada"
+            onChange={(e) => setAddress2Deliver(e.target.value)}
+          />
+        </label>
+        <div>
+          <span className="local">
+            <label htmlFor="localidade">
+              Localidade:
+              <input
+                type="text"
+                className="localidade"
+                value={locationDeliver}
+                placeholder="Digite a sua localidade"
+                onChange={(e) => setLocationDeliver(e.target.value)}
+              />
+            </label>
+          </span>
+          <span className="cp">
+            <label htmlFor="localidadecp">
+              Código Postal:
+              <input
+                type="text"
+                className="localidadecp"
+                value={locationcpDeliver}
+                placeholder="0000-000"
+                onChange={(e) => setLocationcpDeliver(e.target.value)}
+              />
+            </label>
+          </span>
+        </div>
+      </Form>
+    </Container>
   );
 }
 

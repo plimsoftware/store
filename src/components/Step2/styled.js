@@ -1,109 +1,75 @@
 import styled from 'styled-components';
+import * as colors from '../../config/colors';
 
-export const Table = styled.table`
-  width: 100%;
-  margin-top: 40px;
-  table-layout: auto;
-  align-items: center;
-  vertical-align: baseline;
-`;
-
-export const ProfilePicture = styled.td`
-  width: 100px;
-  padding: 5px;
-
-  img {
-    width: 80%;
-    height: 50%;
-  }
-`;
-
-export const Description = styled.td`
-  font-size: 13px;
-  padding: 5px;
-  width: 45%;
-
-  p {
-    margin-bottom: 10px;
-  }
-`;
-
-export const Price = styled.td`
-  font-size: 13px;
-  padding: 5px;
-  width: 20%;
-
-  p {
-    margin-bottom: 10px;
-  }
-`;
-
-export const QuantityDiv = styled.div`
-  width: 80px;
-  display: flexbox;
-  vertical-align: inherit;
+export const Container = styled.div`
+  max-width: 100%;
+  display: flex;
   justify-content: center;
-  align-items: center;
 `;
 
-export const NumberBox = styled.div`
-  width: 40px;
-  align-content: center;
-  justify-content: center;
+export const Separador1 = styled.div`
+  border-bottom: 1px solid;
+  margin-top: 20px;
+`;
 
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
+export const Separador2 = styled.div`
+  border-bottom: 1px solid;
+  margin-top: 5px;
+  margin-bottom: 20px;
+`;
+
+export const Checkbox = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+
+  span {
+    font-size: 12px;
+    margin-left: 10px;
+    padding-top: 5px;
+    font-weight: bold;
+  }
+`;
+
+export const Form = styled.div`
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    font-size: 15px;
   }
 
   input {
-    align-self: center;
-    width: 30px;
-    height: 20px;
-    text-align: center;
+    height: 30px;
+    font-size: 13px;
+    border: 1px solid #ddd;
+    padding: 0 10px;
+    border-radius: 5px;
+    margin-top: 5px;
+
+    &:focus {
+      border: 1px solid ${colors.primaryColor};
+    }
   }
-`;
 
-export const Button = styled.button`
-  width: 15px;
-  height: 14px;
-  line-height: 0.25em;
-  color: white;
-  background-color: red;
-  border: none;
-  margin-bottom: 1px;
-  font-size: 11px;
-  align-content: center;
-  justify-content: center;
-  cursor: pointer;
-`;
+  div {
+    display: inline-flex;
 
-export const AddRemove = styled.div`
-  width: 40%;
-`;
+    span {
+      justify-content: space-between;
+    }
 
-export const Remover = styled.button`
-  background-color: red;
-  border: none;
-  display: flex;
-  color: white;
-  width: 100px;
-  height: 30px;
-  margin: 20px;
-  border-radius: 10px;
-  cursor: pointer;
-  justify-content: center;
-  align-items: center;
-
-  span {
-    padding-left: 10px;
+    .cp {
+      width: 20%;
+    }
+    .local {
+      width: 80%;
+      margin-right: 10px;
+    }
   }
-`;
-
-export const Total = styled.div`
-  margin-top: 30px;
-  font-size: 17px;
-  text-align: right;
-  border-top: 1px solid;
-  padding-top: 15px;
 `;

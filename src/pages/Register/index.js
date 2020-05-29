@@ -59,13 +59,13 @@ export default function Register() {
     if (address1.length < 5 || address1.length > 100) {
       formErrors = true;
 
-      toast.error('Morada 1 deve ter entre 5 e 100 caracteres');
+      toast.error('Morada deve ter entre 5 e 100 caracteres');
     }
 
     if (address2.length > 100) {
       formErrors = true;
 
-      toast.error('Morada 2 deve ter entre 5 e 100 caracteres');
+      toast.error('Morada (cont.) deve ter entre 5 e 100 caracteres');
     }
 
     if (location.length < 3 || location.length > 35) {
@@ -154,7 +154,7 @@ export default function Register() {
             />
           </label>
           <label htmlFor="morada1">
-            Morada 1*:
+            Morada*:
             <input
               type="text"
               className="morada1"
@@ -164,7 +164,7 @@ export default function Register() {
             />
           </label>
           <label htmlFor="morada2">
-            Morada 2:
+            Morada (cont.):
             <input
               type="text"
               className="morada2"
