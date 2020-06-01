@@ -13,3 +13,17 @@ export function removeIten(id) {
     id,
   };
 }
+
+export function addDeliverAddress(payload) {
+  return {
+    type: types.ADD_DELIVERADDRESS,
+    payload,
+  };
+}
+
+export function removeDeliverAddress(id) {
+  return {
+    type: types.REMOVE_DELIVERADDRESS,
+    id,
+  };
+}

@@ -1,7 +1,9 @@
+import { _ } from 'lodash';
 import * as types from '../types';
 
 const initalState = {
   cartItens: [],
+  deliverAddress: {},
   total: 0,
 };
 
@@ -41,6 +43,16 @@ export default function (state = initalState, action) {
       );
       if (qtdIten) newState.total -= qtdIten.qtd;
       return newState;
+    }
+
+    case types.ADD_DELIVERADDRESS: {
+      if (!_.isEmpty(state.deliverAddress)) {
+        const newState = { ...state };
+        newState.deliverAddress = action.payload;
+        return newState;
+      }
+
+      return state;
     }
 
     default: {

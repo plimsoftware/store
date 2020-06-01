@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { get } from 'lodash';
 import Proptype from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { FaCarrot, FaTimesCircle } from 'react-icons/fa';
+import {
+  FaCarrot,
+  FaTimesCircle,
+  FaChevronCircleLeft,
+  FaChevronCircleRight,
+} from 'react-icons/fa';
 
 import {
   Table,
+  TableB,
   ProfilePicture,
   Description,
   Price,
@@ -15,12 +22,15 @@ import {
   Button,
   Remover,
   Total,
+  Avancar,
+  Voltar,
 } from './styled';
 import axios from '../../services/axios';
 import Loading from '../Loading';
 import * as actions from '../../store/modules/shopcart/actions';
+import history from '../../services/history';
 
-export default function Step1({ getDataStep1 }) {
+export default function Step1({ nextStep }) {
   const dispatch = useDispatch();
   let cartItens = useSelector((state) => state.shopcart.cartItens);
   const [isLoading, setIsLoading] = useState(false); // isLoading
@@ -91,8 +101,7 @@ export default function Step1({ getDataStep1 }) {
 
     if (runGetData) getData();
     ShowTotal();
-    getDataStep1(listProd);
-  }, [cartItens, listProd]);
+  }, [cartItens]);
 
   function GetQtdos(props) {
     const { product } = props;
@@ -170,6 +179,19 @@ export default function Step1({ getDataStep1 }) {
       cartItens = 0;
     }
     setRunGetData(true);
+  };
+
+  const handleStepBack = () => {
+    history.push('/');
+  };
+
+  const handleStepForward = () => {
+    if (listProd.length === 0 || listProd == null) {
+      toast.warn('Sem produtos no carrinho!');
+      history.push('/');
+      return;
+    }
+    nextStep(2);
   };
 
   return (
@@ -252,13 +274,37 @@ export default function Step1({ getDataStep1 }) {
       <Total>
         <p>Preço final: {totalCompra}€ </p>
       </Total>
+      <TableB>
+        <tbody>
+          <tr>
+            <td>
+              <div className="col1">
+                <Voltar type="submit" onClick={handleStepBack}>
+                  <span className="letras">Voltar</span>
+                  <span className="back">O</span>
+                  <FaChevronCircleLeft className="BotAvanc" size={24} />
+                </Voltar>
+              </div>
+            </td>
+            <td>
+              <div className="col2">
+                <Avancar type="submit" onClick={handleStepForward}>
+                  <span className="letras">Avançar</span>
+                  <span className="back">O</span>
+                  <FaChevronCircleRight className="BotAvanc" size={24} />
+                </Avancar>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </TableB>
     </>
   );
 }
 
 Step1.defaultProps = {
   product: {},
-  getDataStep1: () => {},
+  nextStep: () => {},
 };
 
 Step1.propTypes = {
@@ -272,5 +318,5 @@ Step1.propTypes = {
       url: Proptype.string,
     }),
   }),
-  getDataStep1: Proptype.func,
+  nextStep: Proptype.func,
 };

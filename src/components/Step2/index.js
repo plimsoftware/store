@@ -1,20 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { get } from 'lodash';
 import Proptype from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
-import { FaCarrot, FaTimesCircle } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { FaChevronCircleLeft, FaChevronCircleRight } from 'react-icons/fa';
 
-import { Form, Container, Separador1, Separador2, Checkbox } from './styled';
+import {
+  Form,
+  Container,
+  Separador1,
+  Separador2,
+  Checkbox,
+  Table,
+  Avancar,
+  Voltar,
+} from './styled';
 import axios from '../../services/axios';
 import Loading from '../Loading';
-import * as actions from '../../store/modules/shopcart/actions';
 import history from '../../services/history';
 
-export default function Step2({ getDataStep1 }) {
-  const dispatch = useDispatch();
+export default function Step2({ nextStep }) {
   const [isLoading, setIsLoading] = useState(false); // isLoading
-  // const [runGetData, setRunGetData] = useState(true);
+  const [runGetData, setRunGetData] = useState(true);
   const [name, setName] = useState('');
   const [surname, setSurNome] = useState('');
   const [email, setEmail] = useState('');
@@ -24,11 +31,11 @@ export default function Step2({ getDataStep1 }) {
   const [locationcp, setLocationcp] = useState('');
   const [phone, setPhone] = useState(0);
   const client = useSelector((state) => state.auth.client);
-
   const [address1Deliver, setAddress1Deliver] = useState('');
   const [address2Deliver, setAddress2Deliver] = useState('');
   const [locationDeliver, setLocationDeliver] = useState('');
   const [locationcpDeliver, setLocationcpDeliver] = useState('');
+  const [checkOk, setCheckOk] = useState(false);
 
   useEffect(() => {
     async function getData() {
@@ -53,16 +60,20 @@ export default function Step2({ getDataStep1 }) {
 
         if (status === 400) errors.map((error) => toast.error(error));
         history.push('/');
+        if (status === 401)
+          errors.map(() =>
+            toast.error('A sua sessão expirou fala login novamente')
+          );
+        history.push('/');
       }
-
+      setRunGetData(false);
       setIsLoading(false);
     }
 
-    getData();
-  }, [client.id]);
+    if (runGetData) getData();
+  }, [runGetData, client.id]);
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  function checkAddress() {
     const regex = /^\d{4}(-\d{3})?$/;
 
     let formErrors = false;
@@ -93,20 +104,8 @@ export default function Step2({ getDataStep1 }) {
 
     if (formErrors) return;
 
-    /* dispatch(
-      actions.registerRequest({
-        name,
-        surname,
-        email,
-        address1,
-        address2,
-        location,
-        locationcp,
-        phone,
-        password,
-        id,
-      })
-    ); */
+    setCheckOk(true);
+    nextStep(3);
   }
 
   const handleAddress = (evt) => {
@@ -125,160 +124,193 @@ export default function Step2({ getDataStep1 }) {
     }
   };
 
+  const handleStepBack = () => {
+    nextStep(1);
+  };
+
+  const handleStepForward = () => {
+    if (!checkOk) {
+      checkAddress();
+      return;
+    }
+    nextStep(3);
+  };
+
   return (
-    <Container>
-      <Loading isLoading={isLoading} />
-      <Form>
-        <label htmlFor="nome">
-          Nome:
-          <input disabled readOnly type="text" className="nome" value={name} />
-        </label>
-        <label htmlFor="apelido">
-          Apelido:
-          <input
-            disabled
-            readOnly
-            type="text"
-            className="apelido"
-            value={surname}
-          />
-        </label>
-        <label htmlFor="email">
-          E-mail:
-          <input disabled readOnly type="email" value={email} />
-        </label>
-        <label htmlFor="morada1">
-          Morada:
-          <input
-            disabled
-            readOnly
-            type="text"
-            className="morada1"
-            value={address1}
-          />
-        </label>
-        <label htmlFor="morada2">
-          Morada (cont.):
-          <input
-            disabled
-            readOnly
-            type="text"
-            className="morada2"
-            value={address2}
-          />
-        </label>
-        <div>
-          <span className="local">
-            <label htmlFor="localidade">
-              Localidade:
-              <input
-                disabled
-                readOnly
-                type="text"
-                className="localidade"
-                value={location}
-              />
-            </label>
-          </span>
-          <span className="cp">
-            <label htmlFor="localidadecp">
-              Código Postal:
-              <input
-                disabled
-                readOnly
-                type="text"
-                className="localidadecp"
-                value={locationcp}
-              />
-            </label>
-          </span>
-        </div>
-        <label htmlFor="telefone">
-          Telefone:
-          <input
-            disabled
-            readOnly
-            type="number"
-            className="telefone"
-            value={phone}
-          />
-        </label>
-        <Separador1 />
-        <Separador2 />
-        <Checkbox>
-          <input
-            type="checkbox"
-            className="moradaEntrega"
-            onChange={handleAddress}
-          />
-          <span>Usar morada associada ao cliente</span>
-        </Checkbox>
-        <label htmlFor="morada1">
-          Morada de entrega:
-          <input
-            type="text"
-            className="morada1"
-            value={address1Deliver}
-            placeholder="Digite a sua morada"
-            onChange={(e) => setAddress1Deliver(e.target.value)}
-          />
-        </label>
-        <label htmlFor="morada2">
-          Morada de entrega (cont.):
-          <input
-            type="text"
-            className="morada2"
-            value={address2Deliver}
-            placeholder="Digite a sua morada"
-            onChange={(e) => setAddress2Deliver(e.target.value)}
-          />
-        </label>
-        <div>
-          <span className="local">
-            <label htmlFor="localidade">
-              Localidade:
-              <input
-                type="text"
-                className="localidade"
-                value={locationDeliver}
-                placeholder="Digite a sua localidade"
-                onChange={(e) => setLocationDeliver(e.target.value)}
-              />
-            </label>
-          </span>
-          <span className="cp">
-            <label htmlFor="localidadecp">
-              Código Postal:
-              <input
-                type="text"
-                className="localidadecp"
-                value={locationcpDeliver}
-                placeholder="0000-000"
-                onChange={(e) => setLocationcpDeliver(e.target.value)}
-              />
-            </label>
-          </span>
-        </div>
-      </Form>
-    </Container>
+    <>
+      <Container>
+        <Loading isLoading={isLoading} />
+        <Form>
+          <label htmlFor="nome">
+            Nome:
+            <input
+              disabled
+              readOnly
+              type="text"
+              className="nome"
+              value={name}
+            />
+          </label>
+          <label htmlFor="apelido">
+            Apelido:
+            <input
+              disabled
+              readOnly
+              type="text"
+              className="apelido"
+              value={surname}
+            />
+          </label>
+          <label htmlFor="email">
+            E-mail:
+            <input disabled readOnly type="email" value={email} />
+          </label>
+          <label htmlFor="morada1">
+            Morada:
+            <input
+              disabled
+              readOnly
+              type="text"
+              className="morada1"
+              value={address1}
+            />
+          </label>
+          <label htmlFor="morada2">
+            Morada (cont.):
+            <input
+              disabled
+              readOnly
+              type="text"
+              className="morada2"
+              value={address2}
+            />
+          </label>
+          <div>
+            <span className="local">
+              <label htmlFor="localidade">
+                Localidade:
+                <input
+                  disabled
+                  readOnly
+                  type="text"
+                  className="localidade"
+                  value={location}
+                />
+              </label>
+            </span>
+            <span className="cp">
+              <label htmlFor="localidadecp">
+                Código Postal:
+                <input
+                  disabled
+                  readOnly
+                  type="text"
+                  className="localidadecp"
+                  value={locationcp}
+                />
+              </label>
+            </span>
+          </div>
+          <label htmlFor="telefone">
+            Telefone:
+            <input
+              disabled
+              readOnly
+              type="number"
+              className="telefone"
+              value={phone}
+            />
+          </label>
+          <Separador1 />
+          <Separador2 />
+          <Checkbox>
+            <input
+              type="checkbox"
+              className="moradaEntrega"
+              onChange={handleAddress}
+            />
+            <span>Usar morada associada ao cliente</span>
+          </Checkbox>
+          <label htmlFor="morada1">
+            Morada de entrega:
+            <input
+              type="text"
+              className="morada1"
+              value={address1Deliver}
+              placeholder="Digite a sua morada"
+              onChange={(e) => setAddress1Deliver(e.target.value)}
+            />
+          </label>
+          <label htmlFor="morada2">
+            Morada de entrega (cont.):
+            <input
+              type="text"
+              className="morada2"
+              value={address2Deliver}
+              placeholder="Digite a sua morada"
+              onChange={(e) => setAddress2Deliver(e.target.value)}
+            />
+          </label>
+          <div>
+            <span className="local">
+              <label htmlFor="localidade">
+                Localidade:
+                <input
+                  type="text"
+                  className="localidade"
+                  value={locationDeliver}
+                  placeholder="Digite a sua localidade"
+                  onChange={(e) => setLocationDeliver(e.target.value)}
+                />
+              </label>
+            </span>
+            <span className="cp">
+              <label htmlFor="localidadecp">
+                Código Postal:
+                <input
+                  type="text"
+                  className="localidadecp"
+                  value={locationcpDeliver}
+                  placeholder="0000-000"
+                  onChange={(e) => setLocationcpDeliver(e.target.value)}
+                />
+              </label>
+            </span>
+          </div>
+        </Form>
+      </Container>
+      <Table>
+        <tbody>
+          <tr>
+            <td>
+              <div className="col1">
+                <Voltar type="submit" onClick={handleStepBack}>
+                  <span className="letras">Voltar</span>
+                  <span className="back">O</span>
+                  <FaChevronCircleLeft className="BotAvanc" size={24} />
+                </Voltar>
+              </div>
+            </td>
+            <td>
+              <div className="col2">
+                <Avancar type="submit" onClick={handleStepForward}>
+                  <span className="letras">Avançar</span>
+                  <span className="back">O</span>
+                  <FaChevronCircleRight className="BotAvanc" size={24} />
+                </Avancar>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </Table>
+    </>
   );
 }
 
 Step2.defaultProps = {
-  product: {},
-  getDataStep1: () => {},
+  nextStep: () => {},
 };
 
 Step2.propTypes = {
-  product: Proptype.shape({
-    id: Proptype.number,
-    priceunit: Proptype.string,
-    price: Proptype.number,
-    name: Proptype.string,
-    short_desc: Proptype.string,
-    Photo: Proptype.shape({
-      url: Proptype.string,
-    }),
-  }),
-  getDataStep1: Proptype.func,
+  nextStep: Proptype.func,
 };
