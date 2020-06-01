@@ -101,7 +101,7 @@ export default function Step1({ nextStep }) {
 
     if (runGetData) getData();
     ShowTotal();
-  }, [cartItens]);
+  }, [cartItens, inputFields]);
 
   function GetQtdos(props) {
     const { product } = props;

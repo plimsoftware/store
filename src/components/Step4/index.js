@@ -19,7 +19,7 @@ import axios from '../../services/axios';
 import Loading from '../Loading';
 import history from '../../services/history';
 
-export default function Step2({ nextStep }) {
+export default function Step4({ nextStep }) {
   const [isLoading, setIsLoading] = useState(false); // isLoading
   const [runGetData, setRunGetData] = useState(true);
   const [name, setName] = useState('');
@@ -307,10 +307,10 @@ export default function Step2({ nextStep }) {
   );
 }
 
-Step2.defaultProps = {
+Step4.defaultProps = {
   nextStep: () => {},
 };
 
-Step2.propTypes = {
+Step4.propTypes = {
   nextStep: Proptype.func,
 };
