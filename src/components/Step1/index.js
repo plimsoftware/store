@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { get } from 'lodash';
 import Proptype from 'prop-types';
@@ -32,15 +32,19 @@ import history from '../../services/history';
 
 export default function Step1({ nextStep }) {
   const dispatch = useDispatch();
-  let cartItens = useSelector((state) => state.shopcart.cartItens);
+  const cartItens = useSelector((state) => state.shopcart.cartItens);
   const [isLoading, setIsLoading] = useState(false); // isLoading
   const [listProd, setListProd] = useState([]); // Lista produtos do Basket
   const [totalCompra, setTotalCompra] = useState(0);
   const [runGetData, setRunGetData] = useState(true);
   const [inputFields, setInputFields] = useState([]); // Campos quantidade
 
-  function ShowTotal() {
-    if (listProd.length === 0) return;
+  const ShowTotal = useCallback(() => {
+    if (listProd.length === 0) {
+      setTotalCompra(0);
+      return;
+    }
+
     let getTotal = 0;
     const values = [...inputFields];
 
@@ -60,7 +64,7 @@ export default function Step1({ nextStep }) {
     });
     setInputFields(values);
     setTotalCompra(getTotal.toFixed(2));
-  }
+  }, [listProd, inputFields, cartItens]);
 
   useEffect(() => {
     function setInputsInitial(length) {
@@ -94,14 +98,14 @@ export default function Step1({ nextStep }) {
       const response = await axios.get(`/product/?${listURL}`);
 
       setListProd(response.data);
-
       setInputsInitial(response.data.length);
+      setInputFields([]);
       setIsLoading(false);
     }
 
     if (runGetData) getData();
-    ShowTotal();
-  }, [cartItens, inputFields]);
+    if (inputFields.length === 0 || listProd.length === 0) ShowTotal();
+  }, [cartItens, runGetData, inputFields, ShowTotal, listProd]);
 
   function GetQtdos(props) {
     const { product } = props;
@@ -176,7 +180,6 @@ export default function Step1({ nextStep }) {
     const id = e.currentTarget.name;
     if (id) {
       dispatch(actions.removeIten(id));
-      cartItens = 0;
     }
     setRunGetData(true);
   };
