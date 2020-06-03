@@ -65,7 +65,7 @@ export default function Register() {
     if (address2.length > 100) {
       formErrors = true;
 
-      toast.error('Morada (cont.) deve ter entre 5 e 100 caracteres');
+      toast.error('Morada (cont.) deve ter entre 0 e 100 caracteres');
     }
 
     if (location.length < 3 || location.length > 35) {

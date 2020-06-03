@@ -48,3 +48,10 @@ export function registerCreatedSuccess(payload) {
     payload,
   };
 }
+
+export function updateAddress(payload) {
+  return {
+    type: types.UPDATE_ADDRESS,
+    payload,
+  };
+}

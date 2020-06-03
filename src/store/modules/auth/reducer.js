@@ -57,6 +57,12 @@ export default function (state = initalState, action) {
       return newState;
     }
 
+    case types.UPDATE_ADDRESS: {
+      const newState = { ...state };
+      newState.isLoading = false;
+      return newState;
+    }
+
     default: {
       return state;
     }

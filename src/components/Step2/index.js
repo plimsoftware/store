@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { get } from 'lodash';
 import Proptype from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { FaChevronCircleLeft, FaChevronCircleRight } from 'react-icons/fa';
 
@@ -18,8 +18,10 @@ import {
 import axios from '../../services/axios';
 import Loading from '../Loading';
 import history from '../../services/history';
+import * as actions from '../../store/modules/auth/actions';
 
 export default function Step2({ nextStep }) {
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false); // isLoading
   const [runGetData, setRunGetData] = useState(true);
   const [name, setName] = useState('');
@@ -87,7 +89,7 @@ export default function Step2({ nextStep }) {
     if (address2Deliver.length > 100) {
       formErrors = true;
 
-      toast.error('Morada (cont.) deve ter entre 5 e 100 caracteres');
+      toast.error('Morada (cont.) deve ter entre 0 e 100 caracteres');
     }
 
     if (locationDeliver.length < 3 || locationDeliver.length > 35) {
@@ -105,6 +107,18 @@ export default function Step2({ nextStep }) {
     if (formErrors) return;
 
     setCheckOk(true);
+    const { id } = client;
+
+    dispatch(
+      actions.updateAddress({
+        id,
+        address1Deliver,
+        address2Deliver,
+        locationDeliver,
+        locationcpDeliver,
+      })
+    );
+
     nextStep(3);
   }
 
@@ -133,6 +147,7 @@ export default function Step2({ nextStep }) {
       checkAddress();
       return;
     }
+
     nextStep(3);
   };
 

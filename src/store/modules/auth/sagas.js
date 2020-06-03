@@ -96,8 +96,52 @@ function* registerRequest({ payload }) {
   }
 }
 
+// eslint-disable-next-line consistent-return
+function* updateAddress({ payload }) {
+  const {
+    id,
+    address1Deliver,
+    address2Deliver,
+    locationDeliver,
+    locationcpDeliver,
+  } = payload;
+
+  try {
+    if (id) {
+      yield call(axios.put, `/clients/${id}`, {
+        address1deliver: address1Deliver,
+        address2deliver: address2Deliver,
+        locationdeliver: locationDeliver,
+        locationcpdeliver: locationcpDeliver,
+      });
+    } else {
+      toast.info('Você precisa fazer login novamente.');
+      yield put(actions.loginFailure());
+      return history.push('/login');
+    }
+  } catch (e) {
+    const errors = get(e, 'response.data.errors', []);
+    const status = get(e, 'response.status', 0);
+
+    if (status === 401) {
+      toast.info('Você precisa fazer login novamente.');
+      yield put(actions.loginFailure());
+      return history.push('/login');
+    }
+
+    if (errors.length > 0) {
+      errors.map((error) => toast.error(error));
+    } else {
+      toast.error('Erro desconhecido');
+    }
+
+    yield put(actions.registerFailure());
+  }
+}
+
 export default all([
   takeLatest(types.LOGIN_REQUEST, loginRequest),
   takeLatest(types.PERSIST_REHYDRATE, persistRehydrate),
   takeLatest(types.REGISTER_REQUEST, registerRequest),
+  takeLatest(types.UPDATE_ADDRESS, updateAddress),
 ]);
