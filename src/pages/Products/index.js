@@ -161,7 +161,7 @@ export default function Products() {
         <h3>Produtos{prodTitle}:</h3>
 
         <ProductContainer>
-          {products.length === 0 || products == null ? (
+          {products == null || products.length === 0 ? (
             <strong>Sem produtos disponiveis nesta categoria.</strong>
           ) : (
             products.map((product, index) => (

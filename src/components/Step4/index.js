@@ -3,7 +3,7 @@ import { get } from 'lodash';
 import Proptype from 'prop-types';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { FaChevronCircleLeft, FaChevronCircleRight } from 'react-icons/fa';
+import { FaChevronCircleRight } from 'react-icons/fa';
 
 import {
   Form,
@@ -13,7 +13,6 @@ import {
   Checkbox,
   Table,
   Avancar,
-  Voltar,
 } from './styled';
 import axios from '../../services/axios';
 import Loading from '../Loading';
@@ -21,38 +20,53 @@ import history from '../../services/history';
 
 export default function Step4({ nextStep }) {
   const [isLoading, setIsLoading] = useState(false); // isLoading
-  const [runGetData, setRunGetData] = useState(true);
-  const [name, setName] = useState('');
-  const [surname, setSurNome] = useState('');
-  const [email, setEmail] = useState('');
-  const [address1, setAddress1] = useState('');
-  const [address2, setAddress2] = useState('');
-  const [location, setLocation] = useState('');
-  const [locationcp, setLocationcp] = useState('');
-  const [phone, setPhone] = useState(0);
+  const [runGetDataUser, setRunGetDataUser] = useState(true);
+  const [runGetData, setRunGetData] = useState(false);
+  const [runOrderDetail, setRunOrderDetail] = useState(false);
+  const [runCartData, setRunCartData] = useState(false);
+  const [orderId, setOrderId] = useState('');
+  const [orderIdBD, setOrderIdBD] = useState(0);
+  // const [orderIdDetail, setOrderIdDetail] = useState([]);
+  const [nameOrder, setNameOrder] = useState('');
+  const [surnameOrder, setSurNomeOrder] = useState('');
+  const [emailOrder, setEmailOrder] = useState('');
+  const [phoneOrder, setPhoneOrder] = useState(0);
   const client = useSelector((state) => state.auth.client);
-  const [address1Deliver, setAddress1Deliver] = useState('');
-  const [address2Deliver, setAddress2Deliver] = useState('');
-  const [locationDeliver, setLocationDeliver] = useState('');
-  const [locationcpDeliver, setLocationcpDeliver] = useState('');
-  const [checkOk, setCheckOk] = useState(false);
+  const cartItens = useSelector((state) => state.shopcart.cartItens);
+  const [address1DeliverOrder, setAddress1DeliverOrder] = useState('');
+  const [address2DeliverOrder, setAddress2DeliverOrder] = useState('');
+  const [locationDeliverOrder, setLocationDeliverOrder] = useState('');
+  const [locationcpDeliverOrder, setLocationcpDeliverOrder] = useState('');
+  const [listProd, setListProd] = useState([]); // Lista produtos do Basket
 
   useEffect(() => {
-    async function getData() {
-      // setRunGetData(false);
-
+    async function getDataUser() {
       try {
+        setRunGetDataUser(false);
         setIsLoading(true);
-        const { data } = await axios.get(`/clients/?${client.id}`);
 
-        setName(data[0].name);
-        setSurNome(data[0].surname);
-        setEmail(data[0].email);
-        setAddress1(data[0].address1);
-        setAddress2(data[0].address2);
-        setLocationcp(data[0].locationcp);
-        setLocation(data[0].location);
-        setPhone(data[0].phone);
+        const response = await axios.get(`/clients/${client.id}`);
+        const {
+          name,
+          surname,
+          address1deliver,
+          address2deliver,
+          locationdeliver,
+          locationcpdeliver,
+          phone,
+          email,
+        } = response.data;
+
+        setNameOrder(name);
+        setSurNomeOrder(surname);
+        setEmailOrder(email);
+        setAddress1DeliverOrder(address1deliver);
+        setAddress2DeliverOrder(address2deliver);
+        setLocationcpDeliverOrder(locationcpdeliver);
+        setLocationDeliverOrder(locationdeliver);
+        setPhoneOrder(phone);
+
+        setRunGetData(true);
       } catch (err) {
         setIsLoading(false);
         const status = get(err, 'response.status', 0);
@@ -60,80 +74,164 @@ export default function Step4({ nextStep }) {
 
         if (status === 400) errors.map((error) => toast.error(error));
         history.push('/');
-        if (status === 401)
+        if (status === 401) {
           errors.map(() =>
             toast.error('A sua sessão expirou fala login novamente')
           );
-        history.push('/');
+          history.push('/');
+        }
       }
+    }
+
+    async function getData() {
       setRunGetData(false);
+      try {
+        const response = await axios.post('/order/', {
+          client_id: client.id,
+          order_address1: address1DeliverOrder,
+          order_address2: address2DeliverOrder,
+          order_location: locationDeliverOrder,
+          order_locationcp: locationcpDeliverOrder,
+          order_phone: phoneOrder,
+          order_email: emailOrder,
+        });
+
+        setOrderId(response.data.orderid);
+        setOrderIdBD(response.data.id);
+        setRunCartData(true);
+      } catch (err) {
+        setIsLoading(false);
+        const status = get(err, 'response.status', 0);
+        const errors = get(err, 'response.data.errors', []);
+
+        if (status === 400) errors.map((error) => toast.error(error));
+        history.push('/');
+        if (status === 401) {
+          errors.map(() =>
+            toast.error('A sua sessão expirou fala login novamente')
+          );
+          history.push('/');
+        }
+      }
+
       setIsLoading(false);
     }
 
+    async function getCartInfo() {
+      setRunCartData(false);
+
+      // GET DATA FROM CART
+      const newList = [];
+      cartItens.map((itens) => {
+        newList.push(itens.id);
+
+        return newList;
+      });
+      const listURL = newList
+        .map((el, idx) => {
+          return `list[${idx}]=${el}`;
+        })
+        .join('&');
+
+      if (cartItens.length === 0) {
+        setListProd([]);
+        return;
+      }
+      setIsLoading(true);
+      const responseBasket = await axios.get(`/product/?${listURL}`);
+
+      setListProd(responseBasket.data);
+      setRunOrderDetail(true);
+    }
+
+    async function getOrderDetail() {
+      if (orderIdBD === 0) return;
+      if (listProd.length === 0) return;
+
+      setRunOrderDetail(false);
+      try {
+        for (let i = 0; i < listProd.length; i += 1) {
+          const quantity = cartItens.find((item) => listProd[i].id === item.id)
+            .qtd;
+          axios.post('/orderdetail/', {
+            order_id: orderIdBD,
+            price: listProd[i].price,
+            tax: listProd[i].tax,
+            quantity,
+            product_id: listProd[i].id,
+          });
+        }
+      } catch (err) {
+        setIsLoading(false);
+        const status = get(err, 'response.status', 0);
+        const errors = get(err, 'response.data.errors', []);
+
+        if (status === 400) errors.map((error) => toast.error(error));
+        history.push('/');
+        if (status === 401) {
+          errors.map(() =>
+            toast.error('A sua sessão expirou fala login novamente')
+          );
+          history.push('/');
+        }
+      }
+
+      setIsLoading(false);
+    }
+
+    if (runGetDataUser) getDataUser();
     if (runGetData) getData();
-  }, [runGetData, client.id]);
+    if (runCartData) getCartInfo();
+    if (runOrderDetail) getOrderDetail();
+    // if (!runGetDataUser && nameOrder !== '') setRunGetData(true);
+  }, [
+    runGetData,
+    runOrderDetail,
+    runGetDataUser,
+    client.id,
+    address1DeliverOrder,
+    address2DeliverOrder,
+    locationDeliverOrder,
+    locationcpDeliverOrder,
+    emailOrder,
+    phoneOrder,
+    nameOrder,
+    orderIdBD,
+    cartItens,
+    listProd,
+    runCartData,
+  ]);
 
-  function checkAddress() {
-    const regex = /^\d{4}(-\d{3})?$/;
+  /* function GetOrders(props) {
+    const { product } = props;
+    let quantity = cartItens.find((itemFind) => itemFind.id === product.id);
 
-    let formErrors = false;
-
-    if (address1Deliver.length < 5 || address1Deliver.length > 100) {
-      formErrors = true;
-
-      toast.error('Morada deve ter entre 5 e 100 caracteres');
-    }
-
-    if (address2Deliver.length > 100) {
-      formErrors = true;
-
-      toast.error('Morada (cont.) deve ter entre 5 e 100 caracteres');
-    }
-
-    if (locationDeliver.length < 3 || locationDeliver.length > 35) {
-      formErrors = true;
-
-      toast.error('Localidade deve ter entre 3 e 35 caracteres');
-    }
-
-    if (!regex.test(locationcpDeliver)) {
-      formErrors = true;
-
-      toast.error('Código Postal não está no formato correto ( 0000-000 )');
-    }
-
-    if (formErrors) return;
-
-    setCheckOk(true);
-    nextStep(3);
-  }
-
-  const handleAddress = (evt) => {
-    evt.persist();
-
-    if (evt.currentTarget.checked) {
-      setAddress1Deliver(address1);
-      setAddress2Deliver(address2);
-      setLocationcpDeliver(locationcp);
-      setLocationDeliver(location);
+    if (quantity) {
+      quantity = quantity.qtd;
     } else {
-      setAddress1Deliver('');
-      setAddress2Deliver('');
-      setLocationcpDeliver('');
-      setLocationDeliver('');
+      quantity = 0;
     }
-  };
 
-  const handleStepBack = () => {
-    nextStep(1);
-  };
+    const priceQtd = product.price * quantity;
+    const finalPrice = priceQtd.toFixed(2);
+
+    return (
+      <>
+        <p>
+          <strong>Quantidade: </strong>
+          {quantity}
+        </p>
+        <p>
+          <strong>Preço total: </strong>
+          {finalPrice}€
+        </p>
+      </>
+    );
+  } */
 
   const handleStepForward = () => {
-    if (!checkOk) {
-      checkAddress();
-      return;
-    }
-    nextStep(3);
+    history.push('/');
+    nextStep(1);
   };
 
   return (
@@ -141,160 +239,63 @@ export default function Step4({ nextStep }) {
       <Container>
         <Loading isLoading={isLoading} />
         <Form>
-          <label htmlFor="nome">
+          <label htmlFor="order">
+            Nº Ordem:
+            <p className="order">{orderId}</p>
+          </label>
+          <label htmlFor="name">
             Nome:
-            <input
-              disabled
-              readOnly
-              type="text"
-              className="nome"
-              value={name}
-            />
+            <p className="name">{nameOrder}</p>
           </label>
-          <label htmlFor="apelido">
+          <label htmlFor="surname">
             Apelido:
-            <input
-              disabled
-              readOnly
-              type="text"
-              className="apelido"
-              value={surname}
-            />
-          </label>
-          <label htmlFor="email">
-            E-mail:
-            <input disabled readOnly type="email" value={email} />
+            <p className="surname">{surnameOrder}</p>
           </label>
           <label htmlFor="morada1">
-            Morada:
-            <input
-              disabled
-              readOnly
-              type="text"
-              className="morada1"
-              value={address1}
-            />
+            Morada de entrega:
+            <p className="morada1">{address1DeliverOrder}</p>
           </label>
           <label htmlFor="morada2">
-            Morada (cont.):
-            <input
-              disabled
-              readOnly
-              type="text"
-              className="morada2"
-              value={address2}
-            />
+            Morada de entrega (cont.):
+            <p className="morada2">{address2DeliverOrder}</p>
           </label>
           <div>
             <span className="local">
               <label htmlFor="localidade">
                 Localidade:
-                <input
-                  disabled
-                  readOnly
-                  type="text"
-                  className="localidade"
-                  value={location}
-                />
+                <p className="localidade">{locationDeliverOrder}</p>
               </label>
             </span>
             <span className="cp">
               <label htmlFor="localidadecp">
                 Código Postal:
-                <input
-                  disabled
-                  readOnly
-                  type="text"
-                  className="localidadecp"
-                  value={locationcp}
-                />
+                <p className="localidadecp">{locationcpDeliverOrder}</p>
               </label>
             </span>
           </div>
           <label htmlFor="telefone">
             Telefone:
-            <input
-              disabled
-              readOnly
-              type="number"
-              className="telefone"
-              value={phone}
-            />
+            <p className="telefone">{phoneOrder}</p>
+          </label>
+          <label htmlFor="email">
+            E-mail:
+            <p className="email">{emailOrder}</p>
           </label>
           <Separador1 />
           <Separador2 />
           <Checkbox>
-            <input
-              type="checkbox"
-              className="moradaEntrega"
-              onChange={handleAddress}
-            />
-            <span>Usar morada associada ao cliente</span>
+            <span>Detalhe dos produtos adquiridos</span>
           </Checkbox>
-          <label htmlFor="morada1">
-            Morada de entrega:
-            <input
-              type="text"
-              className="morada1"
-              value={address1Deliver}
-              placeholder="Digite a sua morada"
-              onChange={(e) => setAddress1Deliver(e.target.value)}
-            />
-          </label>
-          <label htmlFor="morada2">
-            Morada de entrega (cont.):
-            <input
-              type="text"
-              className="morada2"
-              value={address2Deliver}
-              placeholder="Digite a sua morada"
-              onChange={(e) => setAddress2Deliver(e.target.value)}
-            />
-          </label>
-          <div>
-            <span className="local">
-              <label htmlFor="localidade">
-                Localidade:
-                <input
-                  type="text"
-                  className="localidade"
-                  value={locationDeliver}
-                  placeholder="Digite a sua localidade"
-                  onChange={(e) => setLocationDeliver(e.target.value)}
-                />
-              </label>
-            </span>
-            <span className="cp">
-              <label htmlFor="localidadecp">
-                Código Postal:
-                <input
-                  type="text"
-                  className="localidadecp"
-                  value={locationcpDeliver}
-                  placeholder="0000-000"
-                  onChange={(e) => setLocationcpDeliver(e.target.value)}
-                />
-              </label>
-            </span>
-          </div>
         </Form>
       </Container>
       <Table>
         <tbody>
           <tr>
-            <td>
-              <div className="col1">
-                <Voltar type="submit" onClick={handleStepBack}>
-                  <span className="letras">Voltar</span>
-                  <span className="back">O</span>
-                  <FaChevronCircleLeft className="BotAvanc" size={24} />
-                </Voltar>
-              </div>
-            </td>
+            <td />
             <td>
               <div className="col2">
                 <Avancar type="submit" onClick={handleStepForward}>
-                  <span className="letras">Avançar</span>
+                  <span className="letras">Voltar</span>
                   <span className="back">O</span>
                   <FaChevronCircleRight className="BotAvanc" size={24} />
                 </Avancar>
