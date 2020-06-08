@@ -105,6 +105,11 @@ export default function CheckOut() {
         {etapa === 2 && <Step2 nextStep={(step) => setEtapa(step)} />}
         {etapa === 3 && <Step3 nextStep={(step) => setEtapa(step)} />}
         {etapa === 4 && <Step4 nextStep={(step) => setEtapa(step)} />}
+        {etapa !== 4 ? (
+          <></>
+        ) : (
+          <Title>Obrigado pela sua compra! Volte sempre.</Title>
+        )}
       </Container>
     </MainContainer>
   );

@@ -63,6 +63,7 @@ export default function Login(props) {
           <input
             type="password"
             value={password}
+            autoComplete="off"
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Digite a sua password"
           />

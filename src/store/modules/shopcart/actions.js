@@ -27,3 +27,9 @@ export function removeDeliverAddress(id) {
     id,
   };
 }
+
+export function clearShopCart() {
+  return {
+    type: types.CLEAR_SHOPCART,
+  };
+}

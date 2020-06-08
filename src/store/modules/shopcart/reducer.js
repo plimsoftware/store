@@ -55,6 +55,11 @@ export default function (state = initalState, action) {
       return state;
     }
 
+    case types.CLEAR_SHOPCART: {
+      const newState = { ...initalState };
+      return newState;
+    }
+
     default: {
       return state;
     }

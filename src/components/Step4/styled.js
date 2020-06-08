@@ -107,10 +107,44 @@ export const Avancar = styled.button`
   }
 `;
 
-export const Table = styled.table`
+export const MyTable = styled.table`
   width: 100%;
   margin-top: 40px;
   table-layout: auto;
   align-items: center;
   vertical-align: baseline;
+`;
+
+export const MyTable2 = styled.table`
+  width: 100%;
+  margin-top: 20px;
+  table-layout: auto;
+  align-items: center;
+  vertical-align: baseline;
+`;
+
+export const OrderList = styled.div`
+  display: flex;
+  td {
+    color: black;
+    font-size: 12px;
+    margin-left: 20px;
+  }
+`;
+
+export const Detail = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const DetailTotal = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  color: black;
+  font-size: 15px;
+  margin-left: 20px;
+  margin-top: 25px;
+  text-align: right;
 `;

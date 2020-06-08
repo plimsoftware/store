@@ -64,8 +64,9 @@ export default function Step2({ nextStep }) {
         history.push('/');
         if (status === 401)
           errors.map(() =>
-            toast.error('A sua sessão expirou fala login novamente')
+            toast.error('A sua sessão expirou faça login novamente')
           );
+        dispatch(actions.loginFailure());
         history.push('/');
       }
       setRunGetData(false);
@@ -73,7 +74,7 @@ export default function Step2({ nextStep }) {
     }
 
     if (runGetData) getData();
-  }, [runGetData, client.id]);
+  }, [runGetData, client.id, dispatch]);
 
   function checkAddress() {
     const regex = /^\d{4}(-\d{3})?$/;
