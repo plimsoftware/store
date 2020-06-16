@@ -42,12 +42,13 @@ function* registerRequest({ payload }) {
     location,
     locationcp,
     phone,
+    verificationCode,
     password,
   } = payload;
 
   try {
     if (id) {
-      yield call(axios.put, '/clients', {
+      yield call(axios.put, `/clients/${id}`, {
         name,
         surname,
         email,
@@ -55,11 +56,14 @@ function* registerRequest({ payload }) {
         address2,
         location,
         locationcp,
+        verification_code: verificationCode,
         phone,
         password: password || undefined,
       });
+
       toast.success('Conta alterada com sucesso.');
       yield put(actions.registerUpdatedSuccess({ name, email }));
+      history.push('/profile');
     } else {
       yield call(axios.post, '/clients', {
         name,
@@ -74,12 +78,11 @@ function* registerRequest({ payload }) {
       });
       toast.success('Conta criada com sucesso.');
       yield put(actions.registerCreatedSuccess({ name, email }));
-      history.push('/login');
+      history.push('/login/index');
     }
   } catch (e) {
-    const errors = get(e, 'response.data.errors', []);
+    const errors = get(e, 'response.data.message', [{}]);
     const status = get(e, 'response.status', 0);
-
     if (status === 401) {
       toast.info('Você precisa fazer login novamente.');
       yield put(actions.loginFailure());
@@ -114,11 +117,10 @@ function* updateAddress({ payload }) {
         locationdeliver: locationDeliver,
         locationcpdeliver: locationcpDeliver,
       });
-    } else {
-      toast.info('Você precisa fazer login novamente.');
-      yield put(actions.loginFailure());
-      return history.push('/login');
     }
+    toast.info('Você precisa fazer login novamente.');
+    yield put(actions.loginFailure());
+    return history.push('/login');
   } catch (e) {
     const errors = get(e, 'response.data.errors', []);
     const status = get(e, 'response.status', 0);
@@ -139,9 +141,43 @@ function* updateAddress({ payload }) {
   }
 }
 
+// eslint-disable-next-line consistent-return
+function* removeAccount(payload) {
+  const { id } = payload;
+
+  try {
+    if (id) {
+      yield call(axios.delete, `/clients/${id}`);
+
+      toast.info('A sua conta foi eliminada.');
+      yield put(actions.loginFailure());
+      return history.push('/');
+    }
+    toast.info('Você precisa fazer login novamente.');
+    yield put(actions.loginFailure());
+    return history.push('/login');
+  } catch (e) {
+    const errors = get(e, 'response.data.errors', []);
+    const status = get(e, 'response.status', 0);
+
+    if (status === 401) {
+      toast.info('Você precisa fazer login novamente.');
+      yield put(actions.loginFailure());
+      return history.push('/login');
+    }
+
+    if (errors.length > 0) {
+      errors.map((error) => toast.error(error));
+    } else {
+      toast.error('Erro desconhecido');
+    }
+  }
+}
+
 export default all([
   takeLatest(types.LOGIN_REQUEST, loginRequest),
   takeLatest(types.PERSIST_REHYDRATE, persistRehydrate),
   takeLatest(types.REGISTER_REQUEST, registerRequest),
   takeLatest(types.UPDATE_ADDRESS, updateAddress),
+  takeLatest(types.REMOVE_ACCOUNT, removeAccount),
 ]);

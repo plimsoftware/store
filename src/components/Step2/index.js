@@ -37,6 +37,7 @@ export default function Step2({ nextStep }) {
   const [address2Deliver, setAddress2Deliver] = useState('');
   const [locationDeliver, setLocationDeliver] = useState('');
   const [locationcpDeliver, setLocationcpDeliver] = useState('');
+  const [emailVerification, SetEmailVerification] = useState(false);
   const [checkOk, setCheckOk] = useState(false);
 
   useEffect(() => {
@@ -55,6 +56,7 @@ export default function Step2({ nextStep }) {
         setLocationcp(data[0].locationcp);
         setLocation(data[0].location);
         setPhone(data[0].phone);
+        SetEmailVerification(data[0].email_verification);
       } catch (err) {
         setIsLoading(false);
         const status = get(err, 'response.status', 0);
@@ -91,6 +93,14 @@ export default function Step2({ nextStep }) {
       formErrors = true;
 
       toast.error('Morada (cont.) deve ter entre 0 e 100 caracteres');
+    }
+
+    if (emailVerification === false) {
+      formErrors = true;
+
+      toast.error(
+        'Precisa de verificar primeiro o seu endereço de e-mail. Verifique os dados do seu perfil.'
+      );
     }
 
     if (locationDeliver.length < 3 || locationDeliver.length > 35) {
@@ -232,7 +242,7 @@ export default function Step2({ nextStep }) {
             <input
               disabled
               readOnly
-              type="number"
+              type="text"
               className="telefone"
               value={phone}
             />

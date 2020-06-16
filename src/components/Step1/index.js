@@ -143,6 +143,7 @@ export default function Step1({ nextStep }) {
   };
 
   const handleInputChange = (index, evt) => {
+    if (!evt.target.value.match(/^[0-9]+$/)) return;
     const values = [...inputFields];
     values[index] = Math.abs(evt.target.value);
     setInputFields(values);
@@ -235,7 +236,7 @@ export default function Step1({ nextStep }) {
                     <NumberBox>
                       <input
                         disabled
-                        type="number"
+                        type="text"
                         name={product.id}
                         value={inputFields[index] || 0}
                         onChange={(evt) => handleInputChange(index, evt)}

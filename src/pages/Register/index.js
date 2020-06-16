@@ -1,22 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { isEmail } from 'validator';
 import { useSelector, useDispatch } from 'react-redux';
+import { get } from 'lodash';
 
-import { Form, MainContainer, Container, Title, Button } from './styled';
+import {
+  Form,
+  MainContainer,
+  Container,
+  Title,
+  Button,
+  Button2,
+  Verified,
+  Notverified,
+} from './styled';
 import Loading from '../../components/Loading';
 import * as actions from '../../store/modules/auth/actions';
+import axios from '../../services/axios';
+import history from '../../services/history';
+import randCode from '../../modules/generateRandomCode';
 
 export default function Register() {
   const dispatch = useDispatch();
   const id = useSelector((state) => state.auth.client.id);
-  const nameStored = useSelector((state) => state.auth.client.name);
-  const emailStored = useSelector((state) => state.auth.client.email);
-  const isLoading = useSelector((state) => state.auth.isLoading);
-
+  const [isLoading, setIsLoading] = useState(false); // isLoading
   const [name, setName] = useState('');
   const [surname, setSurNome] = useState('');
   const [email, setEmail] = useState('');
+  const [emailVerification, setEmailVerification] = useState(false);
   const [address1, setAddress1] = useState('');
   const [address2, setAddress2] = useState('');
   const [location, setLocation] = useState('');
@@ -25,12 +36,89 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [repassword, setRepassword] = useState('');
 
-  React.useEffect(() => {
+  async function sendVerification(emailSend) {
+    const codigo = randCode(25, true, true, true, false);
+
+    await axios.post(`/clients/sendmail?email=${emailSend}&codigo=${codigo}`);
+
+    return codigo;
+  }
+
+  useEffect(() => {
     if (!id) return;
 
-    setName(nameStored);
-    setEmail(emailStored);
-  }, [emailStored, id, nameStored]);
+    async function getData() {
+      // setRunGetData(false);
+
+      try {
+        setIsLoading(true);
+        const { data } = await axios.get(`/clients/?${id}`);
+
+        setName(data[0].name);
+        setSurNome(data[0].surname);
+        setEmail(data[0].email);
+        setEmailVerification(data[0].email_verification);
+        setAddress1(data[0].address1);
+        setAddress2(data[0].address2);
+        setLocationcp(data[0].locationcp);
+        setLocation(data[0].location);
+        setPhone(data[0].phone);
+      } catch (err) {
+        setIsLoading(false);
+        const status = get(err, 'response.status', 0);
+        const errors = get(err, 'response.data.errors', []);
+
+        if (status === 400) errors.map((error) => toast.error(error));
+        history.push('/');
+        if (status === 401)
+          errors.map(() =>
+            toast.error('A sua sessão expirou faça login novamente')
+          );
+        dispatch(actions.loginFailure());
+        history.push('/');
+      }
+
+      setIsLoading(false);
+    }
+
+    getData();
+  }, [id, dispatch]);
+
+  const handleClick = (evt) => {
+    evt.preventDefault();
+    history.push('/profile');
+  };
+
+  const handlePhonechange = (evt) => {
+    if (!evt.match(/^[0-9]+$/)) return;
+    setPhone(evt);
+  };
+
+  async function handleClickVerification(evt) {
+    evt.preventDefault();
+
+    const verificationCode = await sendVerification(email);
+
+    dispatch(
+      actions.registerRequest({
+        name,
+        surname,
+        email,
+        address1,
+        address2,
+        location,
+        locationcp,
+        verificationCode,
+        phone,
+        password,
+        id,
+      })
+    );
+
+    toast.info(
+      'Foi enviado um mail de verificação para a sua caixa de correio'
+    );
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -54,6 +142,22 @@ export default function Register() {
       formErrors = true;
 
       toast.error('E-mail inválido');
+    }
+
+    if (!id) {
+      try {
+        const response = await axios.post('/clients/checkmail/', {
+          email,
+        });
+
+        if (response.data.valid) {
+          formErrors = true;
+
+          toast.error('E-mail já existe');
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
 
     if (address1.length < 5 || address1.length > 100) {
@@ -114,6 +218,31 @@ export default function Register() {
         id,
       })
     );
+
+    if (!id) await sendVerification(email);
+  }
+
+  function CheckMail() {
+    if (id)
+      return (
+        <>
+          {emailVerification ? (
+            <Verified>Válido</Verified>
+          ) : (
+            <Notverified>
+              Falta validar
+              <button
+                type="submit"
+                onClick={(evt) => handleClickVerification(evt)}
+              >
+                Enviar novo mail de validação
+              </button>
+            </Notverified>
+          )}
+        </>
+      );
+
+    return <></>;
   }
 
   return (
@@ -144,10 +273,9 @@ export default function Register() {
             />
           </label>
           <label htmlFor="email">
-            E-mail*:
+            E-mail*: <CheckMail />
             <input
               type="email"
-              keyboardType="email-address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Digite o seu e-mail"
@@ -202,37 +330,46 @@ export default function Register() {
           <label htmlFor="telefone">
             Telefone:
             <input
-              type="number"
-              keyboardType="phone-pad"
-              min="0"
+              type="text"
               className="telefone"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => handlePhonechange(e.target.value)}
               placeholder="Digite o seu contato telefónico"
             />
           </label>
-          <label htmlFor="password">
-            Password*:
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Digite a sua password"
-            />
-          </label>
-          <label htmlFor="repassword">
-            Repita Password*:
-            <input
-              type="password"
-              value={repassword}
-              onChange={(e) => setRepassword(e.target.value)}
-              placeholder="Digite a sua password"
-            />
-          </label>
+          {id ? (
+            <></>
+          ) : (
+            <>
+              <label htmlFor="password">
+                Password*:
+                <input
+                  type="password"
+                  value={password}
+                  autoComplete="off"
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Digite a sua password"
+                />
+              </label>
+              <label htmlFor="repassword">
+                Repita Password*:
+                <input
+                  type="password"
+                  value={repassword}
+                  autoComplete="off"
+                  onChange={(e) => setRepassword(e.target.value)}
+                  placeholder="Digite a sua password"
+                />
+              </label>
+            </>
+          )}
 
           <Button type="submit">
             {id ? 'Atualizar dados' : 'Criar conta'}
           </Button>
+          <Button2 type="submit" onClick={(evt) => handleClick(evt)}>
+            Voltar
+          </Button2>
         </Form>
       </Container>
     </MainContainer>

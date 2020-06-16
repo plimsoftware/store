@@ -288,12 +288,12 @@ export default function Step4({ nextStep }) {
                 <td>
                   {product.price}€ x {product.quantity}
                 </td>
-                <td>{product.price * product.quantity}€</td>
+                <td>{(product.price * product.quantity).toFixed(2)}€</td>
               </tr>
             ))}
           </tbody>
         </MyTable2>
-        <DetailTotal>Total a pagar: {total}€</DetailTotal>
+        <DetailTotal>Total a pagar: {total.toFixed(2)}€</DetailTotal>
         <MyTable2>
           <tbody>
             <tr>

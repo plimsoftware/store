@@ -11,9 +11,12 @@ import {
   ContainerLogin,
   MainContainer,
   Button,
+  Button2,
   ButtonRes,
 } from './styled';
 import * as actions from '../../store/modules/auth/actions';
+import axios from '../../services/axios';
+import randCode from '../../modules/generateRandomCode';
 
 export default function Login(props) {
   const dispatch = useDispatch();
@@ -24,6 +27,30 @@ export default function Login(props) {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  async function recoverPass(evt) {
+    evt.preventDefault();
+
+    if (!isEmail(email)) {
+      toast.error('Preencha o campo e-mail');
+      return;
+    }
+
+    try {
+      await axios.post('/clients/checkmail/', {
+        email,
+      });
+
+      const codigo = randCode(25, true, true, true, false);
+
+      await axios.post(`/clients/sendmailpass?email=${email}&codigo=${codigo}`);
+      toast.info(
+        'Foi enviado um mail de recuperação de password para a sua caixa'
+      );
+    } catch (err) {
+      toast.error('E-mail não existe');
+    }
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -68,6 +95,9 @@ export default function Login(props) {
             placeholder="Digite a sua password"
           />
           <Button type="submit">Entrar</Button>
+          <Button2 onClick={(evt) => recoverPass(evt)}>
+            Recuperar password
+          </Button2>
           {tipo && <ButtonRes to="/register">Criar novo Utilizador</ButtonRes>}
         </Form>
       </ContainerLogin>

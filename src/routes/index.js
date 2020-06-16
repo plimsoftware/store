@@ -9,6 +9,11 @@ import Fotos from '../pages/Fotos';
 import Register from '../pages/Register';
 import Checkout from '../pages/Checkout';
 import Page404 from '../pages/Page404';
+import Profile from '../pages/Profile';
+import ChangePass from '../pages/ChangePass';
+import ValidateMail from '../pages/ValidateMail';
+import RecoverPass from '../pages/RecoverPass';
+import DeleteAccount from '../pages/DeleteAccount';
 
 export default function Routes() {
   return (
@@ -21,8 +26,20 @@ export default function Routes() {
       <PrivateRoute exact path="/admin/" component={Login} isClosed={false} />
       <PrivateRoute
         exact
+        path="/deleteaccount/"
+        component={DeleteAccount}
+        isClosed
+      />
+      <PrivateRoute
+        exact
         path="/login/:tipo"
         component={Login}
+        isClosed={false}
+      />
+      <PrivateRoute
+        exact
+        path="/checkmail/"
+        component={ValidateMail}
         isClosed={false}
       />
       <PrivateRoute
@@ -31,6 +48,19 @@ export default function Routes() {
         component={Register}
         isClosed={false}
       />
+      <PrivateRoute
+        exact
+        path="/changepassword/"
+        component={ChangePass}
+        isClosed
+      />
+      <PrivateRoute
+        exact
+        path="/recoverpassword/"
+        component={RecoverPass}
+        isClosed={false}
+      />
+      <PrivateRoute exact path="/profile/" component={Profile} isClosed />
       <PrivateRoute path="*" component={Page404} />
     </Switch>
   );

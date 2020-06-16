@@ -10,7 +10,7 @@ import logo from '../../img/logo.png';
 
 export default function Header() {
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const { isLoggedIn } = useSelector((state) => state.auth);
   const tipo = 'cliente';
 
   const handleLogout = (e) => {
@@ -24,7 +24,11 @@ export default function Header() {
       <NavHeader>
         <NavLeft>
           <Link to="/">
-            <img src={logo} alt="Online Store" />
+            <img
+              src={logo}
+              title="Voltar à página inicial"
+              alt="Online Store"
+            />
           </Link>
         </NavLeft>
         <NavRight>
@@ -37,7 +41,11 @@ export default function Header() {
               Iniciar Sessão <FaSignInAlt size={15} />
             </Link>
           )}
-          {isLoggedIn && <FaUserAlt title="Perfil" size={15} />}
+          {isLoggedIn && (
+            <Link title="Perfil" to="/profile/">
+              <FaUserAlt size={15} />
+            </Link>
+          )}
         </NavRight>
       </NavHeader>
     </Nav>

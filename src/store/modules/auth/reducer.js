@@ -39,8 +39,8 @@ export default function (state = initalState, action) {
 
     case types.REGISTER_UPDATED_SUCCESS: {
       const newState = { ...state };
-      newState.user.name = action.payload.name;
-      newState.user.email = action.payload.email;
+      newState.client.name = action.payload.name;
+      newState.client.email = action.payload.email;
       newState.isLoading = false;
       return newState;
     }
@@ -58,6 +58,12 @@ export default function (state = initalState, action) {
     }
 
     case types.UPDATE_ADDRESS: {
+      const newState = { ...state };
+      newState.isLoading = false;
+      return newState;
+    }
+
+    case types.REMOVE_ACCOUNT: {
       const newState = { ...state };
       newState.isLoading = false;
       return newState;

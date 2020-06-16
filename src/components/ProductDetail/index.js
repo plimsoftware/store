@@ -43,6 +43,11 @@ export default function ProductDetail({
     setInputField(values);
   };
 
+  const handleInputChange = (evt) => {
+    if (!evt.target.value.match(/^[0-9]+$/)) return;
+    setInputField(Math.abs(evt.target.value));
+  };
+
   const addItenCart = (prodID, name, qtd) => {
     if (qtd > 0) {
       dispatch(actions.addIten({ prodID, name, qtd }));
@@ -70,9 +75,9 @@ export default function ProductDetail({
           <QuantityDiv>
             <NumberBox>
               <input
-                type="number"
+                type="text"
                 value={inputField}
-                onChange={(evt) => setInputField(Math.abs(evt.target.value))}
+                onChange={handleInputChange}
               />
             </NumberBox>
             <AddRemove>

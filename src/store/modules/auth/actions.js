@@ -55,3 +55,10 @@ export function updateAddress(payload) {
     payload,
   };
 }
+
+export function removeAccount(id) {
+  return {
+    type: types.REMOVE_ACCOUNT,
+    id,
+  };
+}
