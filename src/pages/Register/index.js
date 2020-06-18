@@ -36,12 +36,8 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [repassword, setRepassword] = useState('');
 
-  async function sendVerification(emailSend) {
-    const codigo = randCode(25, true, true, true, false);
-
+  async function sendVerification(emailSend, codigo) {
     await axios.post(`/clients/sendmail?email=${emailSend}&codigo=${codigo}`);
-
-    return codigo;
   }
 
   useEffect(() => {
@@ -97,23 +93,8 @@ export default function Register() {
   async function handleClickVerification(evt) {
     evt.preventDefault();
 
-    const verificationCode = await sendVerification(email);
-
-    dispatch(
-      actions.registerRequest({
-        name,
-        surname,
-        email,
-        address1,
-        address2,
-        location,
-        locationcp,
-        verificationCode,
-        phone,
-        password,
-        id,
-      })
-    );
+    const codigo = randCode(25, true, true, true, false);
+    await sendVerification(email, codigo);
 
     toast.info(
       'Foi enviado um mail de verificação para a sua caixa de correio'
@@ -156,7 +137,7 @@ export default function Register() {
           toast.error('E-mail já existe');
         }
       } catch (err) {
-        console.log(err);
+        history.push('/404');
       }
     }
 
@@ -204,6 +185,8 @@ export default function Register() {
 
     if (formErrors) return;
 
+    const codigo = randCode(25, true, true, true, false);
+
     dispatch(
       actions.registerRequest({
         name,
@@ -213,13 +196,15 @@ export default function Register() {
         address2,
         location,
         locationcp,
+        verificationCode: codigo,
+        emailVerification: false,
         phone,
         password,
         id,
       })
     );
 
-    if (!id) await sendVerification(email);
+    if (!id) await sendVerification(email, codigo);
   }
 
   function CheckMail() {

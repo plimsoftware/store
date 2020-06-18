@@ -43,6 +43,7 @@ function* registerRequest({ payload }) {
     locationcp,
     phone,
     verificationCode,
+    emailVerification,
     password,
   } = payload;
 
@@ -56,7 +57,6 @@ function* registerRequest({ payload }) {
         address2,
         location,
         locationcp,
-        verification_code: verificationCode,
         phone,
         password: password || undefined,
       });
@@ -73,6 +73,8 @@ function* registerRequest({ payload }) {
         address2,
         location,
         locationcp,
+        verification_code: verificationCode,
+        email_verification: emailVerification,
         phone,
         password,
       });
@@ -117,10 +119,11 @@ function* updateAddress({ payload }) {
         locationdeliver: locationDeliver,
         locationcpdeliver: locationcpDeliver,
       });
+    } else {
+      toast.info('Você precisa fazer login novamente.');
+      yield put(actions.loginFailure());
+      return history.push('/login');
     }
-    toast.info('Você precisa fazer login novamente.');
-    yield put(actions.loginFailure());
-    return history.push('/login');
   } catch (e) {
     const errors = get(e, 'response.data.errors', []);
     const status = get(e, 'response.status', 0);

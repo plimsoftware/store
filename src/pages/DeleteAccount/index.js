@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaBox, FaTimesCircle } from 'react-icons/fa';
+import { FaTimesCircle, FaCheckCircle } from 'react-icons/fa';
 import { useSelector, useDispatch } from 'react-redux';
 
 import {
@@ -35,7 +35,7 @@ export default function Profile() {
               <td>
                 <Option type="submit" onClick={(evt) => handleClick(evt)}>
                   <span className="icon">
-                    <FaBox size={23} />
+                    <FaCheckCircle size={23} />
                   </span>
                   <span className="letras">Sim</span>
                 </Option>

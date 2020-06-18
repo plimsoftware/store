@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import {
@@ -17,8 +17,6 @@ export default function Basket() {
   const totalItens = useSelector((state) => state.shopcart.total);
   const cartItens = useSelector((state) => state.shopcart.cartItens);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-
-  useEffect(() => {}, []);
 
   const deleteItenCart = (e) => {
     const id = e.currentTarget.className.baseVal;

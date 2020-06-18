@@ -265,6 +265,7 @@ export default function Step4({ nextStep }) {
     phoneOrder,
     nameOrder,
     orderIdBD,
+    orderDetail,
     cartItens,
     listProd,
     runCartData,

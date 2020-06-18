@@ -30,7 +30,7 @@ export default function Profile() {
             </tr>
             <tr>
               <td>
-                <Option>
+                <Option to="/orders/">
                   <span className="icon">
                     <FaBox size={23} />
                   </span>

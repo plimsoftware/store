@@ -3,7 +3,6 @@ import { Switch } from 'react-router-dom';
 
 import PrivateRoute from './PrivateRoute';
 import Login from '../pages/Login';
-import Aluno from '../pages/Aluno';
 import Products from '../pages/Products';
 import Fotos from '../pages/Fotos';
 import Register from '../pages/Register';
@@ -14,13 +13,12 @@ import ChangePass from '../pages/ChangePass';
 import ValidateMail from '../pages/ValidateMail';
 import RecoverPass from '../pages/RecoverPass';
 import DeleteAccount from '../pages/DeleteAccount';
+import Orders from '../pages/Orders';
 
 export default function Routes() {
   return (
     <Switch>
       <PrivateRoute exact path="/" component={Products} isClosed={false} />
-      <PrivateRoute exact path="/aluno/:id/edit" component={Aluno} isClosed />
-      <PrivateRoute exact path="/aluno/" component={Aluno} isClosed />
       <PrivateRoute exact path="/fotos/:id" component={Fotos} isClosed />
       <PrivateRoute exact path="/checkout/" component={Checkout} isClosed />
       <PrivateRoute exact path="/admin/" component={Login} isClosed={false} />
@@ -30,6 +28,7 @@ export default function Routes() {
         component={DeleteAccount}
         isClosed
       />
+      <PrivateRoute exact path="/orders/" component={Orders} isClosed />
       <PrivateRoute
         exact
         path="/login/:tipo"
