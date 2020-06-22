@@ -6,6 +6,7 @@ const initalState = {
   token: false,
   client: {},
   isLoading: false,
+  admin: false,
 };
 
 export default function (state = initalState, action) {
@@ -15,6 +16,7 @@ export default function (state = initalState, action) {
       newState.isLoggedIn = true;
       newState.token = action.payload.token;
       newState.client = action.payload.client;
+      newState.admin = action.payload.admin;
       newState.isLoading = false;
       return newState;
     }

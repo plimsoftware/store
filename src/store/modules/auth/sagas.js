@@ -15,7 +15,11 @@ function* loginRequest({ payload }) {
 
     axios.defaults.headers.Authorization = `Bearer ${response.data.token}`;
 
-    history.push(payload.prevPath);
+    if (payload.userType === 'client') {
+      history.push(payload.prevPath);
+    } else {
+      history.push('/adminconsole');
+    }
   } catch (e) {
     toast.error('Email ou password inválida.');
 

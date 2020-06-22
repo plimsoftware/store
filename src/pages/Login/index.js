@@ -55,7 +55,7 @@ export default function Login(props) {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    const userType = 'client';
+    const userType = tipo ? 'client' : 'admin';
     let formErrors = false;
 
     if (!isEmail(email)) {
@@ -72,7 +72,7 @@ export default function Login(props) {
 
     if (formErrors) return;
 
-    dispatch(actions.loginRequest({ email, password, prevPath }, userType));
+    dispatch(actions.loginRequest({ email, password, prevPath, userType }));
   }
 
   return (
@@ -95,9 +95,11 @@ export default function Login(props) {
             placeholder="Digite a sua password"
           />
           <Button type="submit">Entrar</Button>
-          <Button2 onClick={(evt) => recoverPass(evt)}>
-            Recuperar password
-          </Button2>
+          {tipo && (
+            <Button2 onClick={(evt) => recoverPass(evt)}>
+              Recuperar password
+            </Button2>
+          )}
           {tipo && <ButtonRes to="/register">Criar novo Utilizador</ButtonRes>}
         </Form>
       </ContainerLogin>
