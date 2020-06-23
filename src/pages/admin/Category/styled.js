@@ -130,7 +130,7 @@ export const ButtonRes = styled(Link)`
   font-weight: bold;
   text-align: center;
   transition: all 300ms;
-  width: 100px;
+  width: 300px;
   align-self: center;
   padding-top: 3px;
 

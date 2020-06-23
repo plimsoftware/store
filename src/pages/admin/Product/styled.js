@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { primaryDarkColor } from '../../../config/colors';
+import { primaryDarkColor, primaryColor } from '../../../config/colors';
 
 export const Title = styled.h1`
   text-align: center;
@@ -13,6 +13,15 @@ export const TitleHeader = styled.h1`
   font-size: 26px;
   font-weight: bolder;
   margin-bottom: 20px;
+`;
+
+export const ProdValues = styled.span`
+  width: 150px;
+  display: inline-flex;
+  font-size: 12px;
+  margin-left: 10px;
+  margin-bottom: 5px;
+  align-items: center;
 `;
 
 export const Container = styled.section`
@@ -28,19 +37,33 @@ export const Container = styled.section`
     justify-content: center;
     display: flex;
     flex-direction: row;
+    font-size: 12px;
+  }
+
+  img {
+    width: 40px;
+    height: 30px;
+    padding-bottom: 7px;
   }
 
   input {
     margin-bottom: 5px;
+    margin-left: 3px;
+    border: none;
+    background-color: white;
   }
   span {
     margin-right: 20px;
+    align-items: center;
+    display: inline-flex;
+    margin-bottom: 5px;
+    font-size: 12px;
   }
 
   section {
     justify-content: center;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
   }
 
   span + span {
@@ -80,38 +103,28 @@ export const Option = styled(Link)`
   }
 `;
 
-export const Button = styled.button`
-  width: 90%;
-  display: inline-flex;
-  height: 60px;
-  margin: 10px;
-  padding: 10px;
-  background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.07);
-  border: none;
-  color: ${primaryDarkColor};
-  align-items: center;
+export const Table = styled.table`
+  width: 100%;
+  margin-top: 30px;
 
-  &:hover {
-    transition: all 300ms;
-    filter: brightness(95%);
+  td {
+    vertical-align: top;
   }
 
-  .icon {
-    width: 20%;
+  th {
+    padding-bottom: 20px;
   }
-  .letras {
-    width: 65%;
-    text-align: center;
+
+  span {
+    margin-left: 5px;
   }
 `;
 
-export const Table = styled.table`
-  width: 100%;
-  table-layout: auto;
-  align-items: center;
-  vertical-align: baseline;
-  margin-top: 30px;
+export const DivCat = styled.div`
+  justify-content: left !important;
+  display: flex;
+  flex-direction: row;
+  font-size: 12px;
 `;
 
 export const ButtonRes = styled(Link)`
@@ -122,13 +135,35 @@ export const ButtonRes = styled(Link)`
   border-radius: 4px;
   margin: 5px;
   font-size: 13px;
-  height: 20px;
+  height: 25px;
+  font-weight: bold;
+  font-size: 12px;
+  text-align: center;
+  transition: all 300ms;
+  width: 300px;
+  align-self: center;
+  padding-top: 5px;
+
+  &:hover {
+    filter: brightness(75%);
+  }
+`;
+
+export const Button = styled(Link)`
+  cursor: pointer;
+  background: ${primaryColor};
+  border: none;
+  color: #fff;
+  border-radius: 4px;
+  margin: 5px;
+  font-size: 12px;
+  height: 25px;
   font-weight: bold;
   text-align: center;
   transition: all 300ms;
-  width: 100px;
+  width: 150px;
   align-self: center;
-  padding-top: 3px;
+  padding-top: 4px;
 
   &:hover {
     filter: brightness(75%);
