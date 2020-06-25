@@ -191,6 +191,9 @@ export default function ProEdit(props) {
         });
 
         await axios.post(`/photos/${data.id}`);
+        await axios.post('/stock/', {
+          product_id: data.id,
+        });
 
         setIsLoading(false);
         toast.info('Produto criado com sucesso');

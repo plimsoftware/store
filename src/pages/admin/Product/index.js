@@ -31,11 +31,11 @@ export default function Product() {
 
       try {
         if (radioSelect === 0) {
-          const responseProd = await axios.get('/product/');
+          const responseProd = await axios.get('/product/?admin=true');
           setProdList(responseProd.data);
         } else {
           const responseProd = await axios.get(
-            `/product/?catid=${radioSelect}`
+            `/product/?catid=${radioSelect}&admin=true`
           );
           setProdList(responseProd.data);
         }
@@ -68,9 +68,23 @@ export default function Product() {
 
   async function handleDelete(prod) {
     try {
+      const { data } = await axios.get(`/stock/${prod.id}`);
+
+      if (data.total !== 0) {
+        toast.warn(
+          `Produto ${prod.name} não pode ser eliminado com stock disponível`
+        );
+        return;
+      }
+    } catch (err) {
+      toast.info('Ocorreu um erro com a validação da conta');
+      history.push('/');
+    }
+
+    try {
       await axios.delete(`/photos/${prod.id}`);
       await axios.delete(`/product/${prod.id}`);
-      toast.info(`Categoria ${prod.name} foi eliminado`);
+      toast.info(`Produto ${prod.name} foi eliminado`);
       setRunGetData(true);
     } catch (err) {
       toast.info('Ocorreu um erro com a validação da conta');

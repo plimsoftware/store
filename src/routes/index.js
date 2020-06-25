@@ -18,6 +18,7 @@ import AdminConsole from '../pages/admin/AdminConsole';
 import CategoryAdmin from '../pages/admin/Category';
 import ProductAdmin from '../pages/admin/Product';
 import ProdEdit from '../pages/admin/ProdEdit';
+import Stock from '../pages/admin/Stock';
 
 export default function Routes() {
   return (
@@ -57,6 +58,7 @@ export default function Routes() {
         isClosed
         isAdmin
       />
+      <PrivateRoute exact path="/stock" component={Stock} isClosed isAdmin />
       <PrivateRoute
         exact
         path="/productAdmin/product"

@@ -45,7 +45,7 @@ export default function AdminConsole() {
               </Button>
             </td>
             <td>
-              <Option to="/changepassword/">
+              <Option to="/stock/">
                 <span className="icon">
                   <FaWarehouse size={23} />
                 </span>
