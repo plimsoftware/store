@@ -156,6 +156,7 @@ export default function Step4({ nextStep }) {
     async function setOrderDetail() {
       if (orderIdBD === 0) return;
       if (listProd.length === 0) return;
+      let semStock = false;
 
       setRunOrderDetail(false);
       try {
@@ -165,25 +166,37 @@ export default function Step4({ nextStep }) {
           const quantity = cartItens.find((item) => listProd[i].id === item.id)
             .qtd;
           const { name } = cartItens.find((item) => listProd[i].id === item.id);
+
+          if (listProd[i].myStock.store < quantity) semStock = true;
+
+          const newListProd = [...listProd];
+
+          if (newListProd[i].discount > 0) {
+            const percentDis =
+              (newListProd[i].price * newListProd[i].discount) / 100;
+            newListProd[i].price -= percentDis;
+            setListProd(newListProd);
+          }
+
           axios.post('/orderdetail/', {
             order_id: orderIdBD,
             name,
-            price: listProd[i].price,
-            tax: listProd[i].tax,
+            price: newListProd[i].price,
+            tax: newListProd[i].tax,
             quantity,
-            product_id: listProd[i].id,
+            product_id: newListProd[i].id,
           });
 
-          newTotal += quantity * listProd[i].price;
+          newTotal += quantity * newListProd[i].price;
 
           const percentage = (
             quantity *
-            listProd[i].price *
-            (listProd[i].tax / 100)
+            newListProd[i].price *
+            (newListProd[i].tax / 100)
           ).toFixed(2);
 
           const existedItem = taxArray.find(
-            (item) => listProd[i].tax === item.tax
+            (item) => newListProd[i].tax === item.tax
           );
           if (existedItem) {
             const index = taxArray.findIndex(
@@ -191,13 +204,13 @@ export default function Step4({ nextStep }) {
             );
             if (index > -1) {
               taxArray[index].sumTax += Number(percentage);
-              taxArray[index].sumValue += quantity * listProd[i].price;
+              taxArray[index].sumValue += quantity * newListProd[i].price;
             }
           } else {
             taxArray.push({
-              tax: listProd[i].tax,
+              tax: newListProd[i].tax,
               sumTax: Number(percentage),
-              sumValue: quantity * listProd[i].price,
+              sumValue: quantity * newListProd[i].price,
             });
           }
         }
@@ -219,6 +232,25 @@ export default function Step4({ nextStep }) {
         }
       }
 
+      if (semStock) {
+        try {
+          await axios.put(`/order/${orderId}`, {
+            ship_status: 'Sem stock',
+          });
+        } catch (err) {
+          const status = get(err, 'response.status', 0);
+          const errors = get(err, 'response.data.errors', []);
+
+          if (status === 400) errors.map((error) => toast.error(error));
+          // history.push('/');
+          if (status === 401) {
+            errors.map(() =>
+              toast.error('A sua sessão expirou fala login novamente')
+            );
+            history.push('/');
+          }
+        }
+      }
       setIsLoading(false);
     }
 
@@ -277,7 +309,7 @@ export default function Step4({ nextStep }) {
   function GetOrders(props) {
     const { detail } = props;
     if (detail.length !== cartItens.length) return <></>;
-
+    // dispatch(actions.clearShopCart());
     return (
       <Detail>
         <MyTable2>
@@ -287,7 +319,7 @@ export default function Step4({ nextStep }) {
                 <td>{product.tax}%</td>
                 <td>{product.name}</td>
                 <td>
-                  {product.price}€ x {product.quantity}
+                  {product.price.toFixed(2)}€ x {product.quantity}
                 </td>
                 <td>{(product.price * product.quantity).toFixed(2)}€</td>
               </tr>

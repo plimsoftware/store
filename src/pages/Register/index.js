@@ -48,17 +48,16 @@ export default function Register() {
 
       try {
         setIsLoading(true);
-        const { data } = await axios.get(`/clients/?${id}`);
-
-        setName(data[0].name);
-        setSurNome(data[0].surname);
-        setEmail(data[0].email);
-        setEmailVerification(data[0].email_verification);
-        setAddress1(data[0].address1);
-        setAddress2(data[0].address2);
-        setLocationcp(data[0].locationcp);
-        setLocation(data[0].location);
-        setPhone(data[0].phone);
+        const { data } = await axios.get(`/clients/${id}`);
+        setName(data.name);
+        setSurNome(data.surname);
+        setEmail(data.email);
+        setEmailVerification(data.email_verification);
+        setAddress1(data.address1);
+        setAddress2(data.address2);
+        setLocationcp(data.locationcp);
+        setLocation(data.location);
+        setPhone(data.phone);
       } catch (err) {
         setIsLoading(false);
         const status = get(err, 'response.status', 0);

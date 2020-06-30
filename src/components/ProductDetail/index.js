@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Proptype from 'prop-types';
 import { FaCartPlus } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
 
 import * as actions from '../../store/modules/shopcart/actions';
 
@@ -32,6 +33,16 @@ export default function ProductDetail({
     setInputField(prodQty);
   }, [prodQty]);
 
+  function Stock() {
+    if (currentProd.myStock.store === 0)
+      return <strong style={{ color: 'red' }}>Indisponível</strong>;
+
+    if (currentProd.myStock.store > 0 && currentProd.myStock.store < 20)
+      return <strong style={{ color: '#DC6E00' }}>Poucas unidades</strong>;
+
+    return <strong style={{ color: 'green' }}>Disponível</strong>;
+  }
+
   const handleInputBUp = () => {
     const values = inputField + 1;
     setInputField(values);
@@ -48,10 +59,54 @@ export default function ProductDetail({
     setInputField(Math.abs(evt.target.value));
   };
 
-  const addItenCart = (prodID, name, qtd) => {
-    if (qtd > 0) {
-      dispatch(actions.addIten({ prodID, name, qtd }));
+  const addItenCart = (prod, qtd) => {
+    const { id, name } = prod;
+
+    if (qtd > prod.myStock.store) {
+      toast.error(`Sem stock disponível. Máximo: ${prod.myStock.store}`);
+      return;
     }
+
+    if (qtd > 0) {
+      dispatch(actions.addIten({ prodID: id, name, qtd }));
+    }
+  };
+
+  function MyPrice({ product }) {
+    if (product.discount > 0) {
+      const percent = (product.price * product.discount) / 100;
+      const finalPrice = (product.price - percent).toFixed(2);
+      return (
+        <span>
+          Preço:{' '}
+          <strike>
+            {product.price}€/{product.priceunit}
+          </strike>{' '}
+          <br />
+          <span style={{ color: 'red' }}>
+            {finalPrice}€/{product.priceunit}
+          </span>
+        </span>
+      );
+    }
+
+    return (
+      <span>
+        Preço: {product.price}€/{product.priceunit}
+      </span>
+    );
+  }
+
+  MyPrice.defaultProps = {
+    product: {},
+  };
+
+  MyPrice.propTypes = {
+    product: Proptype.shape({
+      priceunit: Proptype.string,
+      price: Proptype.number,
+      discount: Proptype.number,
+    }),
   };
 
   if (!detailStatus) return <></>;
@@ -65,11 +120,18 @@ export default function ProductDetail({
         </Close>
         <h1>{currentProd.name}</h1>
         <h2>{currentProd.long_desc}</h2>
-        <p>Stock:</p>
-        <p>Promoção:</p>
-        <span>
-          Preço: {currentProd.price}€/{currentProd.priceunit}
-        </span>
+        <p>
+          Stock: <Stock />
+        </p>
+        {currentProd.discount > 0 ? (
+          <p>
+            Promoção:{' '}
+            <strong style={{ color: 'red' }}>{currentProd.discount}%</strong>
+          </p>
+        ) : (
+          <></>
+        )}
+        <MyPrice product={currentProd} />
 
         <ProdAddBasket>
           <QuantityDiv>
@@ -86,11 +148,7 @@ export default function ProductDetail({
               <Button onClick={handleInputBDown}>-</Button>
             </AddRemove>
           </QuantityDiv>
-          <IconBasket
-            onClick={() =>
-              addItenCart(currentProd.id, currentProd.name, inputField)
-            }
-          >
+          <IconBasket onClick={() => addItenCart(currentProd, inputField)}>
             <FaCartPlus size={26} color="red" />
           </IconBasket>
         </ProdAddBasket>
@@ -112,10 +170,14 @@ ProductDetail.propTypes = {
     id: Proptype.number,
     priceunit: Proptype.string,
     price: Proptype.number,
+    discount: Proptype.number,
     name: Proptype.string,
     long_desc: Proptype.string,
     Photo: Proptype.shape({
       url: Proptype.string,
+    }),
+    myStock: Proptype.shape({
+      store: Proptype.number,
     }),
   }),
   prodQty: Proptype.number,

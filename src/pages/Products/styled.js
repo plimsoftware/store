@@ -24,6 +24,7 @@ export const MenuContainer = styled.div`
   position: fixed;
   background: #fff;
   margin-top: 100px;
+  z-index: 10;
   margin-right: 10px;
   padding: 20px;
   border-top-right-radius: 10px;
@@ -41,14 +42,42 @@ export const ProductContainer = styled.div`
 `;
 
 export const ProfilePicture = styled.div`
+  position: relative;
+  top: 0;
+  left: 0;
+
   svg {
     margin-bottom: 45px;
     align-items: center;
   }
 
-  img {
+  .image1 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
     width: 180px;
     height: 130px;
+  }
+
+  .image2 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    width: 180px;
+    height: 130px;
+    opacity: 0.5;
+  }
+
+  .image3 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    width: 30px;
+    height: 15px;
+    opacity: 1;
   }
 
   cursor: pointer;
@@ -56,6 +85,8 @@ export const ProfilePicture = styled.div`
 
 export const ProductShow = styled.div`
   display: inline-flex;
+
+  width: 180px;
   flex-direction: column;
   font-size: 13px;
   margin-right: 15px;
@@ -64,6 +95,10 @@ export const ProductShow = styled.div`
   &:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
     border-radius: 10px;
+  }
+
+  section {
+    margin-top: 140px;
   }
 `;
 
@@ -84,7 +119,7 @@ export const MenuItem = styled.li`
   }
 `;
 
-export const ProdAddBasket = styled.section`
+export const ProdAddBasket = styled.div`
   width: 100px;
   font-size: 10px;
   margin-top: 5px;

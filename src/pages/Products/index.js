@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { get } from 'lodash';
 import { FaCartPlus, FaCarrot } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { toast } from 'react-toastify';
+import Proptype from 'prop-types';
+
 import * as actions from '../../store/modules/shopcart/actions';
 import {
   ProductContainer,
@@ -24,6 +25,8 @@ import axios from '../../services/axios';
 import Loading from '../../components/Loading';
 import ProductDetail from '../../components/ProductDetail';
 import Basket from '../../components/Basket';
+import unavailable from '../../img/unavailable.png';
+import discount from '../../img/discount.png';
 
 export default function Products() {
   const dispatch = useDispatch();
@@ -117,11 +120,55 @@ export default function Products() {
     setProdQty(0);
   };
 
-  const addItenCart = (index, name, qtd) => {
+  const addItenCart = (index, prod, qtd) => {
+    if (qtd > prod.myStock.store) {
+      toast.error(`Sem stock disponível. Máximo: ${prod.myStock.store}`);
+      return;
+    }
     if (qtd > 0) {
       const prodID = products[index].id;
+      const { name } = prod;
       dispatch(actions.addIten({ prodID, name, qtd }));
     }
+  };
+
+  function MyPrice({ product }) {
+    if (product.discount > 0) {
+      const percent = (product.price * product.discount) / 100;
+      const finalPrice = (product.price - percent).toFixed(2);
+      return (
+        <span>
+          Preço:{' '}
+          <strike>
+            {product.price}€/{product.priceunit}
+          </strike>
+          <p style={{ color: 'red' }}>
+            Promoção: {finalPrice}€/{product.priceunit} ({product.discount}%)
+          </p>
+        </span>
+      );
+    }
+
+    return (
+      <span>
+        Preço: {product.price}€/{product.priceunit}
+        <p>
+          <br />
+        </p>
+      </span>
+    );
+  }
+
+  MyPrice.defaultProps = {
+    product: {},
+  };
+
+  MyPrice.propTypes = {
+    product: Proptype.shape({
+      priceunit: Proptype.string,
+      price: Proptype.number,
+      discount: Proptype.number,
+    }),
   };
 
   return (
@@ -173,39 +220,53 @@ export default function Products() {
                   }
                 >
                   {get(product, 'Photo.url', false) ? (
-                    <img src={product.Photo.url} alt="" />
+                    <>
+                      <img className="image1" src={product.Photo.url} alt="" />
+                      {product.myStock.store === 0 ? (
+                        <img className="image2" src={unavailable} alt="" />
+                      ) : (
+                        <></>
+                      )}
+                      {product.discount > 0 ? (
+                        <img className="image3" src={discount} alt="" />
+                      ) : (
+                        <></>
+                      )}
+                    </>
                   ) : (
                     <FaCarrot size={50} />
                   )}
                 </ProfilePicture>
-                <strong>{product.name}</strong>
-                <span>
-                  Preço: {product.price}€/{product.priceunit}
-                </span>
-                <ProdAddBasket>
-                  <QuantityDiv>
-                    <NumberBox>
-                      <input
-                        type="text"
-                        name={product.id}
-                        value={inputFields[index] || 0}
-                        onChange={(evt) => handleInputChange(index, evt)}
-                      />
-                    </NumberBox>
-                    <AddRemove>
-                      <Button onClick={() => handleInputBUp(index)}>+</Button>
-                      <br />
-                      <Button onClick={() => handleInputBDown(index)}>-</Button>
-                    </AddRemove>
-                  </QuantityDiv>
-                  <IconBasket
-                    onClick={() =>
-                      addItenCart(index, product.name, inputFields[index] || 0)
-                    }
-                  >
-                    <FaCartPlus size={26} color="red" />
-                  </IconBasket>
-                </ProdAddBasket>
+                <section>
+                  <strong>{product.name}</strong> <br />
+                  <MyPrice product={product} />
+                  <ProdAddBasket>
+                    <QuantityDiv>
+                      <NumberBox>
+                        <input
+                          type="text"
+                          name={product.id}
+                          value={inputFields[index] || 0}
+                          onChange={(evt) => handleInputChange(index, evt)}
+                        />
+                      </NumberBox>
+                      <AddRemove>
+                        <Button onClick={() => handleInputBUp(index)}>+</Button>
+                        <br />
+                        <Button onClick={() => handleInputBDown(index)}>
+                          -
+                        </Button>
+                      </AddRemove>
+                    </QuantityDiv>
+                    <IconBasket
+                      onClick={() =>
+                        addItenCart(index, product, inputFields[index] || 0)
+                      }
+                    >
+                      <FaCartPlus size={26} color="red" />
+                    </IconBasket>
+                  </ProdAddBasket>
+                </section>
               </ProductShow>
             ))
           )}

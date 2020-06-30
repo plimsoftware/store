@@ -7,7 +7,7 @@ export const Container = styled.div`
   height: 100%;
   top: 0;
   left: 0;
-  z-index: 1;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -16,7 +16,7 @@ export const Container = styled.div`
 `;
 
 export const Close = styled.button`
-  z-index: 2;
+  z-index: 4;
   position: absolute;
   margin-top: 5px;
   margin-right: 5px;
@@ -38,7 +38,7 @@ export const ProdBackColor = styled.div`
   width: 650px;
   height: 400px;
   border-radius: 10px;
-  z-index: 1;
+  z-index: 3;
   background-color: ${colors.primaryColor};
   opacity: 1;
 `;
@@ -51,7 +51,7 @@ export const ProdImage = styled.div`
   margin-top: -200px;
   width: 650px;
   height: 400px;
-  z-index: 1;
+  z-index: 3;
   background-image: url('${(props) => props.url}');
   background-size: cover;
   background-color: blue;
@@ -67,7 +67,7 @@ export const ProdContainer = styled.div`
   margin-top: -200px;
   width: 650px;
   height: 400px;
-  z-index: 2;
+  z-index: 4;
   display: block;
   align-items: left;
   justify-content: left;
@@ -99,7 +99,6 @@ export const ProdContainer = styled.div`
   }
 
   span {
-    margin-top: 40px;
     margin-right: 20px;
     float: right;
     font-size: 15px;

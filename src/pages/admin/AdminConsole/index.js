@@ -55,7 +55,7 @@ export default function AdminConsole() {
           </tr>
           <tr>
             <td>
-              <Option to="/orders/">
+              <Option to="/ordersAdmin/">
                 <span className="icon">
                   <FaReceipt size={23} />
                 </span>

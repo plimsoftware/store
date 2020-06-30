@@ -46,17 +46,17 @@ export default function Step2({ nextStep }) {
 
       try {
         setIsLoading(true);
-        const { data } = await axios.get(`/clients/?${client.id}`);
+        const { data } = await axios.get(`/clients/${client.id}`);
 
-        setName(data[0].name);
-        setSurNome(data[0].surname);
-        setEmail(data[0].email);
-        setAddress1(data[0].address1);
-        setAddress2(data[0].address2);
-        setLocationcp(data[0].locationcp);
-        setLocation(data[0].location);
-        setPhone(data[0].phone);
-        SetEmailVerification(data[0].email_verification);
+        setName(data.name);
+        setSurNome(data.surname);
+        setEmail(data.email);
+        setAddress1(data.address1);
+        setAddress2(data.address2);
+        setLocationcp(data.locationcp);
+        setLocation(data.location);
+        setPhone(data.phone);
+        SetEmailVerification(data.email_verification);
       } catch (err) {
         setIsLoading(false);
         const status = get(err, 'response.status', 0);

@@ -26,6 +26,7 @@ export default function ProEdit(props) {
   const [longDesc, setLongDesc] = useState('');
   const [price, setPrice] = useState(0);
   const [tax, setTax] = useState(0);
+  const [discount, setDiscount] = useState(0);
   const [priceUnit, setPriceUnit] = useState('');
   const [weight, setWeight] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
@@ -65,6 +66,7 @@ export default function ProEdit(props) {
         setLongDesc(data.product.long_desc);
         setPrice(data.product.price);
         setTax(data.product.tax);
+        setDiscount(data.product.discount);
         setPriceUnit(data.product.priceunit);
         setWeight(data.product.weight);
         setIsVisible(data.product.visible);
@@ -156,6 +158,7 @@ export default function ProEdit(props) {
           long_desc: longDesc,
           price,
           tax,
+          discount,
           priceunit: priceUnit,
           weight,
           visible: isVisible,
@@ -184,6 +187,7 @@ export default function ProEdit(props) {
           long_desc: longDesc,
           price,
           tax,
+          discount,
           priceunit: priceUnit,
           weight,
           visible: isVisible,
@@ -307,6 +311,19 @@ export default function ProEdit(props) {
               />
             </label>
           </PriceDiv>
+          <label htmlFor="discount">
+            Desconto (%):
+            <input
+              type="number"
+              className="discount"
+              value={discount}
+              onChange={(e) => {
+                if (!e.target.value.match(/^[0-9]*\.?[0-9]+$/)) return;
+                setDiscount(e.target.value);
+              }}
+              placeholder="Digite o desconto"
+            />
+          </label>
           Categoria:
           <CategoryStyle
             id="category"

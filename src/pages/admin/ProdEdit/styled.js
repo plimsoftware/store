@@ -13,6 +13,10 @@ export const Form = styled.form`
     font-size: 14px;
   }
 
+  .discount {
+    width: 100px;
+  }
+
   input {
     height: 30px;
     font-size: 13px;

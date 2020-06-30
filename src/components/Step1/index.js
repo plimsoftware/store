@@ -57,7 +57,11 @@ export default function Step1({ nextStep }) {
         quantity = 0;
       }
 
-      const prodQtd = prod.price * quantity;
+      let percent = 0;
+      if (prod.discount > 0) percent = (prod.price * prod.discount) / 100;
+
+      const prodQtd = (prod.price - percent) * quantity;
+
       getTotal += prodQtd;
       getTotal.toFixed(2);
       values[index] = quantity;
@@ -117,11 +121,25 @@ export default function Step1({ nextStep }) {
       quantity = 0;
     }
 
-    const priceQtd = product.price * quantity;
-    const finalPrice = priceQtd.toFixed(2);
+    let priceQtd = 0;
+    let finalPrice = 0;
+    let percent = 0;
+
+    if (product.discount > 0) {
+      percent = (product.price * product.discount) / 100;
+      priceQtd = (product.price - percent) * quantity;
+      finalPrice = priceQtd.toFixed(2);
+    } else {
+      priceQtd = product.price * quantity;
+      finalPrice = priceQtd.toFixed(2);
+    }
 
     return (
       <>
+        <p>
+          <strong>Preço unitário: </strong>
+          {(product.price - percent).toFixed(2)}€/{product.priceunit}
+        </p>
         <p>
           <strong>Quantidade: </strong>
           {quantity}
@@ -225,10 +243,6 @@ export default function Step1({ nextStep }) {
                   <p>{product.short_desc}</p>
                 </Description>
                 <Price>
-                  <p>
-                    <strong>Preço unitário: </strong>
-                    {product.price}€/{product.priceunit}
-                  </p>
                   <GetQtdos product={product} />
                 </Price>
                 <td>
