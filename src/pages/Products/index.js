@@ -140,7 +140,7 @@ export default function Products() {
         <span>
           Preço:{' '}
           <strike>
-            {product.price}€/{product.priceunit}
+            {product.price}€/{product.priceunit.toFixed(2)}
           </strike>
           <p style={{ color: 'red' }}>
             Promoção: {finalPrice}€/{product.priceunit} ({product.discount}%)
