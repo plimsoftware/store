@@ -70,7 +70,7 @@ export default function Product() {
     try {
       const { data } = await axios.get(`/stock/${prod.id}`);
 
-      if (data.total !== 0) {
+      if (data.total > 0) {
         toast.warn(
           `Produto ${prod.name} não pode ser eliminado com stock disponível`
         );
