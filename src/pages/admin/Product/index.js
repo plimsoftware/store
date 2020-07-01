@@ -69,8 +69,8 @@ export default function Product() {
   async function handleDelete(prod) {
     try {
       const { data } = await axios.get(`/stock/${prod.id}`);
-
-      if (data.total > 0) {
+      console.log(data.total);
+      if (data.total !== 0) {
         toast.warn(
           `Produto ${prod.name} não pode ser eliminado com stock disponível`
         );
