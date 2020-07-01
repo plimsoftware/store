@@ -67,7 +67,8 @@ export default function Orders() {
   }
 
   function ShowOrder() {
-    if (orderList.length === 0) return <>Ainda não efectuou nenhuma ordem</>;
+    if (orderList.length === 0)
+      return <span className="noOrders">Ainda não efectuou nenhuma ordem</span>;
 
     return (
       <>

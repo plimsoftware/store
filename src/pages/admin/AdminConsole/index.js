@@ -63,7 +63,7 @@ export default function AdminConsole() {
               </Option>
             </td>
             <td>
-              <Option to="/deleteaccount/">
+              <Option to="/clientsAdmin/">
                 <span className="icon">
                   <FaAddressCard size={23} />
                 </span>

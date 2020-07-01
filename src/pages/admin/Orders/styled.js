@@ -59,6 +59,7 @@ export const Table = styled.table`
 
   input {
     margin: 5px;
+    padding: 3px;
   }
 `;
 
@@ -166,6 +167,7 @@ export const CategoryStyle = styled.select`
   width: 100px;
   position: relative;
   margin: 5px;
+  padding: 3px;
 `;
 
 export const CategoryStyle1 = styled.select`

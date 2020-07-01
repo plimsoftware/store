@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import * as colors from '../../config/colors';
+import * as colors from '../../../config/colors';
 
 export const Title = styled.h1`
   text-align: center;
@@ -31,6 +31,38 @@ export const Table = styled.table`
   font-size: 12px;
 
   align-items: center;
+
+  vertical-align: baseline;
+  text-align: center;
+
+  tr {
+    cursor: pointer;
+  }
+
+  td {
+    padding-right: 10px;
+    padding-bottom: 5px;
+  }
+
+  .other {
+    width: 120px !important;
+  }
+
+  th {
+    padding-right: 10px;
+    padding-bottom: 5px;
+  }
+
+  input {
+    margin: 5px;
+    padding: 3px;
+  }
+`;
+
+export const Table1 = styled.table`
+  font-size: 10px;
+
+  align-items: center;
   width: 100%;
   vertical-align: baseline;
   text-align: center;
@@ -44,20 +76,23 @@ export const Table = styled.table`
     padding-bottom: 5px;
   }
 
+  .category {
+    width: 50px !important;
+  }
+
   th {
     padding-right: 10px;
     padding-bottom: 15px;
+  }
+
+  input {
+    margin: 5px;
   }
 `;
 
 export const MasterTable = styled.table`
   td {
     vertical-align: top;
-  }
-
-  .noOrders {
-    display: flex;
-    justify-content: center;
   }
 `;
 
@@ -82,12 +117,57 @@ export const Button = styled.button`
   }
 `;
 
+export const ButtonRes = styled.button`
+  cursor: pointer;
+  background: ${colors.primaryDarkColor};
+  border: none;
+  color: #fff;
+  border-radius: 4px;
+  margin: 5px;
+  font-size: 13px;
+  height: 25px;
+  font-weight: bold;
+  font-size: 12px;
+  text-align: center;
+  transition: all 300ms;
+  width: 100%;
+  align-self: center;
+
+  &:hover {
+    filter: brightness(75%);
+  }
+`;
+
 export const Detalhe = styled.div`
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 10px;
+  width: 400px;
 
   span {
     color: ${colors.primaryDarkColor};
     font-size: 13px;
   }
+
+  .editCat {
+    margin-left: 10px;
+  }
+
+  li {
+    font-size: 13px;
+    color: ${colors.primaryDarkColor};
+  }
+`;
+
+export const CategoryStyle = styled.select`
+  font-size: 12px;
+  width: 100px;
+  position: relative;
+  margin: 5px;
+`;
+
+export const CategoryStyle1 = styled.select`
+  font-size: 10px;
+  width: 80px;
+  position: relative;
+  margin: 5px;
 `;

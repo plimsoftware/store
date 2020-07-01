@@ -39,7 +39,7 @@ export default function Basket() {
   };
 
   return (
-    <BasketContainer totalItens={totalItens}>
+    <BasketContainer totalItens={cartItens.length}>
       <div className="listaprodutos">
         <Avancar onClick={checkOut}>
           <span>

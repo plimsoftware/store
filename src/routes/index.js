@@ -20,6 +20,7 @@ import ProductAdmin from '../pages/admin/Product';
 import OrdersAdmin from '../pages/admin/Orders';
 import ProdEdit from '../pages/admin/ProdEdit';
 import Stock from '../pages/admin/Stock';
+import ClientsAdmin from '../pages/admin/Clients';
 
 export default function Routes() {
   return (
@@ -63,6 +64,13 @@ export default function Routes() {
         exact
         path="/ordersAdmin"
         component={OrdersAdmin}
+        isClosed
+        isAdmin
+      />
+      <PrivateRoute
+        exact
+        path="/clientsAdmin"
+        component={ClientsAdmin}
         isClosed
         isAdmin
       />
