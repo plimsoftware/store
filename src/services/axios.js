@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 export default axios.create({
-  // baseURL: 'https://escolaapi.plimsoftware.pt',
-  baseURL: 'http://localhost:3001',
+  baseURL: 'https://storeapi.plimsoftware.pt',
   localhost: 3001,
 });
