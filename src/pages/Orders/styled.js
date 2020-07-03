@@ -18,7 +18,7 @@ export const Container = styled.section`
   padding: 20px;
   border-radius: 4px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-  font-size: 15px;
+  font-size: max(1vw, 10px);
 `;
 
 export const MainContainer = styled.section`
@@ -28,7 +28,7 @@ export const MainContainer = styled.section`
 `;
 
 export const Table = styled.table`
-  font-size: 12px;
+  font-size: max(1vw, 10px);
 
   align-items: center;
   width: 100%;
@@ -88,6 +88,6 @@ export const Detalhe = styled.div`
 
   span {
     color: ${colors.primaryDarkColor};
-    font-size: 13px;
+    font-size: max(1vw, 10px);
   }
 `;

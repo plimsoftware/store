@@ -6,7 +6,7 @@ export const Nav = styled.div`
   background: ${primaryDarkColor};
   box-shadow: 0 0 10px rgba(0, 0, 0, 1);
   position: fixed;
-  z-index: 2;
+  z-index: 3;
   width: 100%;
 `;
 

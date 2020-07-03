@@ -8,9 +8,10 @@ export const BasketContainer = styled.div`
   border-bottom-left-radius: 20px;
   top: ${(props) => (Number(props.totalItens) > 0 ? '-290px' : `-370px`)};
   right: 0;
-  z-index: 1;
+  z-index: 2;
   display: flex;
   flex-direction: column;
+  position: fixed;
   justify-content: flex-end;
   text-align: center;
   background: rgba(255, 194, 137, 0.95);

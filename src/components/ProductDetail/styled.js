@@ -31,11 +31,8 @@ export const Close = styled.button`
 
 export const ProdBackColor = styled.div`
   position: fixed;
-  top: 50%;
-  left: 50%;
-  margin-left: -325px;
-  margin-top: -200px;
-  width: 650px;
+
+  width: 50%;
   height: 400px;
   border-radius: 10px;
   z-index: 3;
@@ -45,11 +42,7 @@ export const ProdBackColor = styled.div`
 
 export const ProdImage = styled.div`
   position: fixed;
-  top: 50%;
-  left: 50%;
-  margin-left: -325px;
-  margin-top: -200px;
-  width: 650px;
+  width: 50%;
   height: 400px;
   z-index: 3;
   background-image: url('${(props) => props.url}');
@@ -61,11 +54,7 @@ export const ProdImage = styled.div`
 
 export const ProdContainer = styled.div`
   position: fixed;
-  top: 50%;
-  left: 50%;
-  margin-left: -325px;
-  margin-top: -200px;
-  width: 650px;
+  width: 50%;
   height: 400px;
   z-index: 4;
   display: block;

@@ -133,6 +133,12 @@ export default function ProEdit(props) {
       toast.error('Unidade de Preço deve ter entre 2 a 3 caracteres');
     }
 
+    if (category === 0) {
+      formErrors = true;
+
+      toast.error('Escolha uma categoria');
+    }
+
     if (formErrors) return;
 
     if (prodId) {

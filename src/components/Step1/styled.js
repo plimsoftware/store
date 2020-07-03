@@ -10,6 +10,7 @@ export const Table = styled.table`
 
 export const ProfilePicture = styled.td`
   width: 100px;
+  height: 100px;
   padding: 5px;
 
   img {

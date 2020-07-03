@@ -20,6 +20,7 @@ import {
   ProductShow,
   IconBasket,
   Button,
+  Button2,
 } from './styled';
 import axios from '../../services/axios';
 import Loading from '../../components/Loading';
@@ -27,9 +28,11 @@ import ProductDetail from '../../components/ProductDetail';
 import Basket from '../../components/Basket';
 import unavailable from '../../img/unavailable.png';
 import discount from '../../img/discount.png';
+import randCode from '../../modules/generateRandomCode';
 
 export default function Products() {
   const dispatch = useDispatch();
+  const ITENS_PER_PAGE = 12;
   const [products, setProducts] = useState([]); // Lista Produtos
   const [prodcats, setProdCats] = useState([]); // Lista Menu
   const [prodcat, setProdCat] = useState(0); // Menu Corrente
@@ -40,7 +43,47 @@ export default function Products() {
   const [currentProd, setCurrentProd] = useState({}); // Produto seleccionado
   const [currentIndex, setCurrentIndex] = useState(0); // Produto seleccionado (index)
   const [prodQty, setProdQty] = useState(0);
+  const [page, setPage] = useState(0);
   const cartItenstmp = useSelector((state) => state.shopcart.cartItens);
+
+  const Pagination = ({ pages, goTo }) => (
+    <div className="pagination">
+      {pages.map((p, i) => (
+        <Button2
+          type="button"
+          key={randCode(25, true, true, true, false)}
+          onClick={goTo}
+          value={i}
+        >
+          {i + 1}
+        </Button2>
+      ))}
+    </div>
+  );
+
+  Pagination.defaultProps = {
+    pages: {},
+    goTo: () => {},
+  };
+
+  Pagination.propTypes = {
+    pages: Proptype.shape([]),
+    goTo: Proptype.func,
+  };
+
+  const divideItensIntoPages = (itens) => {
+    const newPagedItens = [];
+    [...Array(Math.ceil(itens.length / ITENS_PER_PAGE))].forEach((q, i) => {
+      newPagedItens.push(
+        itens.slice(0 + ITENS_PER_PAGE * i, ITENS_PER_PAGE + ITENS_PER_PAGE * i)
+      );
+    });
+    return newPagedItens;
+  };
+
+  const goToPage = (evt) => {
+    setPage(evt.target.value);
+  };
 
   useEffect(() => {
     function setInputsInitial(length) {
@@ -54,14 +97,23 @@ export default function Products() {
     async function getData() {
       setIsLoading(true);
       if (prodcat === 0) {
-        const response = await axios.get('/product');
-        setProducts(response.data);
-        setInputsInitial(response.data.length);
+        const { data } = await axios.get('/product');
+        if (data.length > 0) {
+          setProducts(divideItensIntoPages(data));
+        } else {
+          setProducts(data);
+        }
+        setInputsInitial(data.length);
       } else {
-        const response = await axios.get(`/product/?catid=${prodcat}`);
-        setProducts(response.data);
-        setInputsInitial(response.data.length);
+        const { data } = await axios.get(`/product/?catid=${prodcat}`);
+        if (data.length > 0) {
+          setProducts(divideItensIntoPages(data));
+        } else {
+          setProducts(data);
+        }
+        setInputsInitial(data.length);
       }
+      setPage(0);
     }
 
     async function getDataMenu() {
@@ -126,7 +178,7 @@ export default function Products() {
       return;
     }
     if (qtd > 0) {
-      const prodID = products[index].id;
+      const prodID = products[page][index].id;
       const { name } = prod;
       dispatch(actions.addIten({ prodID, name, qtd }));
     }
@@ -190,6 +242,7 @@ export default function Products() {
               onClick={() => {
                 setProdCat(prodcate.id);
                 setProdTitle(`(${prodcate.name})`);
+                setPage(0);
               }}
             >
               {prodcate.name}
@@ -212,7 +265,7 @@ export default function Products() {
           {products == null || products.length === 0 ? (
             <strong>Sem produtos disponiveis nesta categoria.</strong>
           ) : (
-            products.map((product, index) => (
+            products[page].map((product, index) => (
               <ProductShow key={product.id}>
                 <ProfilePicture
                   onClick={() =>
@@ -270,6 +323,7 @@ export default function Products() {
               </ProductShow>
             ))
           )}
+          <Pagination pages={products} goTo={goToPage} />
         </ProductContainer>
       </MiddleContainer>
     </MainContainer>

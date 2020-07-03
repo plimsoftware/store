@@ -39,6 +39,11 @@ export const MenuContainer = styled.div`
 
 export const ProductContainer = styled.div`
   margin-top: 20px;
+
+  .pagination {
+    text-align: center;
+    margin-top: 30px;
+  }
 `;
 
 export const ProfilePicture = styled.div`
@@ -170,4 +175,20 @@ export const Button = styled.button`
 
 export const AddRemove = styled.div`
   width: 40%;
+`;
+
+export const Button2 = styled.button`
+  cursor: pointer;
+  background: ${colors.primaryColor};
+  border: none;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: 700;
+  margin: 5px;
+  transition: all 300ms;
+
+  &:hover {
+    filter: brightness(75%);
+  }
 `;

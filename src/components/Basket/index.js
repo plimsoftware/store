@@ -48,8 +48,13 @@ export default function Basket() {
           <span>Avançar</span>
         </Avancar>
         <ul>
+          {cartItens.length > 5 ? (
+            <li>Avançar para ver lista completa ...</li>
+          ) : (
+            <></>
+          )}
           {cartItens ? (
-            cartItens.map((itens) => (
+            cartItens.slice(0, 5).map((itens) => (
               <li key={itens.id}>
                 <span className="item">
                   <FaCaretRight size={12} /> {itens.name} x{itens.qtd}
