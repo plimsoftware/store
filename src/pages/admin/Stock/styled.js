@@ -12,7 +12,6 @@ export const TitleHeader = styled.h1`
   padding: 10px;
   font-size: 26px;
   font-weight: bolder;
-  margin-bottom: 20px;
 `;
 
 export const ProdValues = styled.span`
@@ -28,7 +27,6 @@ export const CategoryStyle = styled.select`
   font-size: 12px;
   width: 200px;
   position: relative;
-  margin-bottom: 15px;
   margin-left: 10px;
 `;
 
@@ -121,6 +119,12 @@ export const Table = styled.table`
     font-size: 13px;
   }
 
+  .prodName {
+    vertical-align: top;
+    text-align: left;
+    font-size: 13px;
+  }
+
   th {
     padding-bottom: 20px;
     font-size: 15px;
@@ -144,7 +148,7 @@ export const ButtonRes = styled(Link)`
   border: none;
   color: #fff;
   border-radius: 4px;
-  margin: 5px;
+  margin: 10px 5px 30px 5px;
   font-size: 13px;
   height: 25px;
   font-weight: bold;

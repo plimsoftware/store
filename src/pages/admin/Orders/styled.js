@@ -28,7 +28,7 @@ export const MainContainer = styled.section`
 `;
 
 export const Table = styled.table`
-  font-size: 12px;
+  font-size: max(1vw, 10px);
 
   align-items: center;
   width: 100%;
@@ -44,27 +44,21 @@ export const Table = styled.table`
     padding-bottom: 5px;
   }
 
-  .category {
-    width: 50px !important;
-  }
-
-  .other {
-    width: 120px !important;
-  }
-
   th {
     padding-right: 10px;
     padding-bottom: 15px;
   }
 
   input {
+    width: 100%;
     margin: 5px;
     padding: 3px;
+    font-size: max(1vw, 10px);
   }
 `;
 
 export const Table1 = styled.table`
-  font-size: 10px;
+  font-size: max(1vw, 10px);
 
   align-items: center;
   width: 100%;
@@ -90,6 +84,7 @@ export const Table1 = styled.table`
   }
 
   input {
+    width: 100%;
     margin: 5px;
   }
 `;
@@ -97,6 +92,11 @@ export const Table1 = styled.table`
 export const MasterTable = styled.table`
   td {
     vertical-align: top;
+  }
+
+  .noOrders {
+    display: flex;
+    justify-content: center;
   }
 `;
 
@@ -128,10 +128,9 @@ export const ButtonRes = styled.button`
   color: #fff;
   border-radius: 4px;
   margin: 5px;
-  font-size: 13px;
   height: 25px;
   font-weight: bold;
-  font-size: 12px;
+  font-size: max(1vw, 10px);
   text-align: center;
   transition: all 300ms;
   width: 100%;
@@ -145,11 +144,11 @@ export const ButtonRes = styled.button`
 export const Detalhe = styled.div`
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 10px;
-  width: 200px;
+  width: 100%;
 
   span {
     color: ${colors.primaryDarkColor};
-    font-size: 11px;
+    font-size: max(1vw, 10px);
   }
 
   .editCat {
@@ -157,13 +156,13 @@ export const Detalhe = styled.div`
   }
 
   li {
-    font-size: 10px;
+    font-size: max(1vw, 10px);
     color: ${colors.primaryDarkColor};
   }
 `;
 
 export const CategoryStyle = styled.select`
-  font-size: 12px;
+  font-size: max(1vw, 10px);
   width: 100px;
   position: relative;
   margin: 5px;
@@ -171,7 +170,7 @@ export const CategoryStyle = styled.select`
 `;
 
 export const CategoryStyle1 = styled.select`
-  font-size: 10px;
+  font-size: max(1vw, 10px);
   width: 80px;
   position: relative;
   margin: 5px;

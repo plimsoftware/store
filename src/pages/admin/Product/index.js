@@ -14,6 +14,7 @@ import {
   ProdValues,
 } from './styled';
 import Loading from '../../../components/Loading';
+import ScrollTop from '../../../components/ScrollTop';
 import axios from '../../../services/axios';
 import history from '../../../services/history';
 
@@ -142,9 +143,13 @@ export default function Product() {
 
   return (
     <MainContainer>
+      <ScrollTop />
       <Loading isLoading={isLoading} />
       <Container>
         <TitleHeader>Gestão de Produtos</TitleHeader>
+        <div>
+          <ButtonRes to="/adminconsole/">Voltar</ButtonRes>
+        </div>
         <Table>
           <tbody>
             <tr>
@@ -186,6 +191,9 @@ export default function Product() {
                 </form>
               </td>
               <td>
+                <section>
+                  <Button to="/productAdmin/product">Novo produto</Button>
+                </section>
                 {prodList.length !== 0 ? (
                   prodList.map((prod) => (
                     <div key={prod.id}>
@@ -199,10 +207,6 @@ export default function Product() {
                     </span>
                   </div>
                 )}
-
-                <section>
-                  <Button to="/productAdmin/product">Novo produto</Button>
-                </section>
               </td>
             </tr>
           </tbody>

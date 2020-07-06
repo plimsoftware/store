@@ -22,6 +22,7 @@ import {
 } from './styled';
 
 import Loading from '../../../components/Loading';
+import ScrollTop from '../../../components/ScrollTop';
 import axios from '../../../services/axios';
 import history from '../../../services/history';
 
@@ -221,7 +222,8 @@ export default function AdminOrders() {
     const [valueEmail, setValueEmail] = useState('');
     const [category, setCategory] = useState(0);
 
-    if (orderList.length === 0) return <>Ainda não efectuou nenhuma ordem</>;
+    if (orderList.length === 0)
+      return <span className="noOrders">Ainda não existe nenhuma ordem</span>;
 
     return (
       <>
@@ -538,6 +540,7 @@ export default function AdminOrders() {
 
   return (
     <MainContainer>
+      <ScrollTop />
       <Loading isLoading={isLoading} />
       <Container>
         <>

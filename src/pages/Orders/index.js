@@ -12,6 +12,7 @@ import {
 } from './styled';
 
 import Loading from '../../components/Loading';
+import ScrollTop from '../../components/ScrollTop';
 import axios from '../../services/axios';
 import history from '../../services/history';
 
@@ -256,10 +257,14 @@ export default function Orders() {
 
   return (
     <MainContainer>
+      <ScrollTop />
       <Loading isLoading={isLoading} />
       <Container>
         <>
           <Title>As suas ordens</Title>
+          <Button type="submit" onClick={(evt) => handleClick(evt)}>
+            Voltar
+          </Button>
           <MasterTable>
             <tbody>
               <tr>

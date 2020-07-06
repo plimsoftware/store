@@ -13,6 +13,7 @@ import {
 } from './styled';
 
 import Loading from '../../../components/Loading';
+import ScrollTop from '../../../components/ScrollTop';
 import axios from '../../../services/axios';
 import history from '../../../services/history';
 
@@ -111,7 +112,8 @@ export default function AdminClients() {
   function ShowClient() {
     const [valueId, setValueId] = useState('');
 
-    if (clientList.length === 0) return <>Não existem clientes</>;
+    if (clientList.length === 0)
+      return <span className="noClients">Não existem clientes</span>;
 
     return (
       <>
@@ -237,6 +239,7 @@ export default function AdminClients() {
 
   return (
     <MainContainer>
+      <ScrollTop />
       <Loading isLoading={isLoading} />
       <Container>
         <>

@@ -52,7 +52,7 @@ export const ProdImage = styled.div`
 `;
 
 export const ProdContainer = styled.div`
-  position: relative;
+  position: fixed;
   width: 450px;
   height: 250px;
   z-index: 2;

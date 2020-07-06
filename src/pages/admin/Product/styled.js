@@ -12,7 +12,6 @@ export const TitleHeader = styled.h1`
   padding: 10px;
   font-size: 26px;
   font-weight: bolder;
-  margin-bottom: 20px;
 `;
 
 export const ProdValues = styled.span`
@@ -156,6 +155,7 @@ export const Button = styled(Link)`
   color: #fff;
   border-radius: 4px;
   margin: 5px;
+  margin-bottom: 15px;
   font-size: 12px;
   height: 25px;
   font-weight: bold;

@@ -14,6 +14,7 @@ import {
   CategoryStyle,
 } from './styled';
 import Loading from '../../../components/Loading';
+import ScrollTop from '../../../components/ScrollTop';
 import axios from '../../../services/axios';
 import history from '../../../services/history';
 
@@ -86,6 +87,7 @@ export default function Stock() {
 
   return (
     <MainContainer>
+      <ScrollTop />
       <Loading isLoading={isLoading} />
       <Container>
         <TitleHeader>Gestão de Stock</TitleHeader>
@@ -94,7 +96,30 @@ export default function Stock() {
           currentProd={currentProd}
           close={() => handleCloseDetail()}
         />
-
+        <div>
+          <ButtonRes to="/adminconsole/">Voltar</ButtonRes>
+        </div>
+        <div>
+          Filtar por categoria
+          <CategoryStyle
+            id="category"
+            name="category"
+            value={category}
+            onChange={(e) => {
+              setCategory(e.currentTarget.value);
+              setRunGetData(true);
+            }}
+          >
+            <option value="0" key="0">
+              --none--
+            </option>
+            {categoryList.map((cat) => (
+              <option value={cat.id} key={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </CategoryStyle>
+        </div>
         <Table>
           <tbody>
             <tr>
@@ -108,7 +133,7 @@ export default function Stock() {
             {prodList.length !== 0 ? (
               prodList.map((prod) => (
                 <tr key={prod.id}>
-                  <td>
+                  <td className="prodName">
                     <div>
                       <img src={prod.Photo.url} alt="" />
                       <ProdValues>{prod.name}</ProdValues>
@@ -143,27 +168,6 @@ export default function Stock() {
             )}
           </tbody>
         </Table>
-        <div>
-          Filtar por categoria:
-          <CategoryStyle
-            id="category"
-            name="category"
-            value={category}
-            onChange={(e) => {
-              setCategory(e.currentTarget.value);
-              setRunGetData(true);
-            }}
-          >
-            <option value="0" key="0">
-              --none--
-            </option>
-            {categoryList.map((cat) => (
-              <option value={cat.id} key={cat.id}>
-                {cat.name}
-              </option>
-            ))}
-          </CategoryStyle>
-        </div>
         <div>
           <ButtonRes to="/adminconsole/">Voltar</ButtonRes>
         </div>
