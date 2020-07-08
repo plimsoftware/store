@@ -29,6 +29,7 @@ import Basket from '../../components/Basket';
 import unavailable from '../../img/unavailable.png';
 import discount from '../../img/discount.png';
 import randCode from '../../modules/generateRandomCode';
+import * as colors from '../../config/colors';
 
 export default function Products() {
   const dispatch = useDispatch();
@@ -52,6 +53,11 @@ export default function Products() {
         <Button2
           type="button"
           key={randCode(25, true, true, true, false)}
+          style={
+            Number(page) === i
+              ? { background: `${colors.primaryDarkColor}` }
+              : { background: `${colors.primaryColor}` }
+          }
           onClick={goTo}
           value={i}
         >

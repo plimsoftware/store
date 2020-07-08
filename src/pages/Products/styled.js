@@ -179,7 +179,6 @@ export const AddRemove = styled.div`
 
 export const Button2 = styled.button`
   cursor: pointer;
-  background: ${colors.primaryColor};
   border: none;
   color: #fff;
   padding: 5px 10px;

@@ -18,7 +18,7 @@ function App() {
       <PersistGate persistor={persistor}>
         <Router history={history}>
           <Header />
-          <CookieConsent buttonText="Eu concordo">
+          <CookieConsent buttonText="Eu concordo" sameSite="strict">
             OnlineStore guarda informação na LocalStorage para poder funcionar
             correctamente. <a href="/infocookies/">+info</a>
           </CookieConsent>
