@@ -1,32 +1,50 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import { FaArrowCircleUp } from 'react-icons/fa';
+import './App.css';
 
-import { Container } from './styled';
+export default class ScrollTop extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showScroll: false,
+    };
+    this.checkScrollTop = this.checkScrollTop.bind(this);
+    this.scrollTop = this.scrollTop.bind(this);
+  }
 
-export default function ScrollTop() {
-  const [showScroll, setShowScroll] = useState(false);
+  componentDidMount() {
+    window.addEventListener('scroll', this.checkScrollTop);
+  }
 
-  const checkScrollTop = () => {
-    if (!showScroll && window.pageYOffset > 200) {
-      setShowScroll(true);
-    } else if (showScroll && window.pageYOffset <= 200) {
-      setShowScroll(false);
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.checkScrollTop);
+  }
+
+  scrollTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
+  checkScrollTop() {
+    const { showScroll } = this.state;
+    if (!showScroll && window.pageYOffset > 100) {
+      this.setState({ showScroll: true });
+    } else if (showScroll && window.pageYOffset <= 100) {
+      this.setState({ showScroll: false });
     }
-  };
+  }
 
-  const scrollTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  window.addEventListener('scroll', checkScrollTop);
-
-  return (
-    <Container>
+  render() {
+    const { showScroll } = this.state;
+    return (
       <FaArrowCircleUp
         className="scrollTop"
-        onClick={scrollTop}
+        title="Ir para o topo"
+        onClick={() => this.scrollTop()}
         style={{ height: 40, display: showScroll ? 'flex' : 'none' }}
       />
-    </Container>
-  );
+    );
+  }
 }

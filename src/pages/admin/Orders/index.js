@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Component } from 'react';
+import Proptype from 'prop-types';
 import { toast } from 'react-toastify';
 import {
   FaPencilAlt,
@@ -25,6 +26,186 @@ import Loading from '../../../components/Loading';
 import ScrollTop from '../../../components/ScrollTop';
 import axios from '../../../services/axios';
 import history from '../../../services/history';
+
+class OrderDetailStatus extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      category: 'Sem stock',
+      editCategory: false,
+    };
+    this.handleChangeDetailStat = this.handleChangeDetailStat.bind(this);
+  }
+
+  handleChangeDetailStat = (category) => {
+    const { orderitem, exitOrder, orderid } = this.props;
+    // SEM STOCK
+    if (category === 'Sem stock') {
+      this.setState({ editCategory: false });
+      return;
+    }
+
+    // OK
+    if (category === 'Ok') {
+      try {
+        axios.get(`/stock/${orderitem.product_id}`).then(({ data }) => {
+          if (data.stock.warehouse < orderitem.quantity) {
+            toast.error('Não existe quantidade disponível em armazém');
+            this.setState({
+              editCategory: false,
+              category: 'Sem stock',
+            });
+            return;
+          }
+
+          axios.put(`/stock/admin/${orderitem.product_id}`, {
+            warehouse: data.stock.warehouse - orderitem.quantity,
+            expedition: data.stock.expedition + orderitem.quantity,
+          });
+
+          axios.put(`/orderdetail/admin/${orderitem.id}`, {
+            status: category,
+          });
+
+          axios.get(`/order/admin/?id=${orderid}`).then((response) => {
+            axios.put(`/order/admin/${orderid}`, {
+              ship_status: 'Sem stock',
+              nrstockout: response.data.nrstockout - 1,
+            });
+          });
+
+          toast.info('Item actualizado');
+        });
+
+        exitOrder();
+      } catch (err) {
+        toast.error(
+          `Não foi possivel atualizar o detalhe de ordem ${orderitem.id}!`
+        );
+      }
+
+      this.setState({ editCategory: false });
+    }
+
+    // CANCELADO
+    if (category === 'Cancelado') {
+      try {
+        this.setState({
+          editCategory: false,
+          category: 'Cancelado',
+        });
+
+        axios.put(`/orderdetail/admin/${orderitem.id}`, {
+          status: category,
+        });
+
+        axios.get(`/order/admin/?id=${orderid}`).then((response) => {
+          axios.put(`/order/admin/${orderid}`, {
+            nrstockout: response.data.nrstockout - 1,
+          });
+        });
+
+        toast.info('Item cancelado');
+
+        exitOrder();
+      } catch (err) {
+        toast.error(
+          `Não foi possivel atualizar o detalhe de ordem ${orderitem.id}!`
+        );
+      }
+
+      this.setState({ editCategory: false });
+    }
+  };
+
+  render() {
+    const { category, editCategory } = this.state;
+    const { orderitem } = this.props;
+
+    if (orderitem.status !== 'Sem stock')
+      return (
+        <span>
+          <strong>Estado:</strong> {orderitem.status}
+        </span>
+      );
+
+    return (
+      <>
+        <strong>Estado:</strong>
+        {editCategory ? (
+          <CategoryStyle1
+            id="category"
+            name="category"
+            value={category}
+            onChange={(e) => this.setState({ category: e.currentTarget.value })}
+          >
+            <option value="Sem stock" key="s1">
+              Sem stock
+            </option>
+            <option value="Ok" key="s2">
+              Ok
+            </option>
+            <option value="Cancelado" key="s3">
+              Cancelado
+            </option>
+          </CategoryStyle1>
+        ) : (
+          <span style={{ color: 'red' }}>{orderitem.status}</span>
+        )}
+        {'  '}
+        <span className="editCat">
+          {editCategory ? (
+            <>
+              <span>
+                <FaCheck
+                  size="13"
+                  color="green"
+                  title="Modificar"
+                  onClick={() => this.handleChangeDetailStat(category)}
+                  cursor="pointer"
+                />
+              </span>
+              <span>
+                <FaTimes
+                  size="13"
+                  color="red"
+                  title="Cancelar"
+                  onClick={() => this.setState({ editCategory: false })}
+                  cursor="pointer"
+                />
+              </span>
+            </>
+          ) : (
+            <FaPencilAlt
+              size="13"
+              title="Mudar estado"
+              onClick={() => this.setState({ editCategory: true })}
+              cursor="pointer"
+            />
+          )}
+        </span>
+      </>
+    );
+  }
+}
+
+OrderDetailStatus.defaultProps = {
+  orderitem: {},
+  orderid: '',
+  exitOrder: () => {},
+};
+
+OrderDetailStatus.propTypes = {
+  orderitem: Proptype.shape({
+    quantity: Proptype.number,
+    product_id: Proptype.number,
+    id: Proptype.number,
+    status: Proptype.string,
+    orderId: Proptype.string,
+  }),
+  orderid: Proptype.string,
+  exitOrder: Proptype.func,
+};
 
 export default function AdminOrders() {
   const [runGetData, setRunGetData] = useState(true);
@@ -205,15 +386,38 @@ export default function AdminOrders() {
     }
   }
 
-  async function handleChangeCat(cat, orderId) {
+  async function handleChangeCat(cat, order) {
     try {
-      await axios.put(`/order/admin/${orderId}`, {
+      const { data } = await axios.get(`/order/admin/?id=${order.orderid}`);
+      if (data.nrstockout > 0) {
+        toast.error('Ainda tem itens sem stock para validar');
+        return;
+      }
+
+      if (cat === 'Cancelado' || cat === 'Enviado') {
+        for (let i = 0; i < order.Orderdetails.length; i += 1) {
+          if (order.Orderdetails[i].status === 'Ok') {
+            axios
+              .get(`/stock/${order.Orderdetails[i].product_id}`)
+              .then((response) => {
+                axios.put(`/stock/admin/${order.Orderdetails[i].product_id}`, {
+                  expedition:
+                    response.data.stock.expedition -
+                    order.Orderdetails[i].quantity,
+                });
+              });
+          }
+        }
+      }
+
+      await axios.put(`/order/admin/${order.orderid}`, {
         ship_status: cat,
       });
+
       setOrderDetail({});
       setRunGetData(true);
     } catch (err) {
-      toast.error(`Não foi actualizar a ordem ${orderId}!`);
+      toast.error(`Não foi possivel actualizar a ordem ${order.orderId}!`);
     }
   }
 
@@ -384,7 +588,7 @@ export default function AdminOrders() {
   }
 
   function OrderDetail() {
-    const [category, setCategory] = useState(0);
+    const [category, setCategory] = useState('Pendente');
     const [editCategory, setEditcategory] = useState(false);
 
     if (Object.entries(orderDetail).length === 0) return <></>;
@@ -449,9 +653,7 @@ export default function AdminOrders() {
                       size="13"
                       color="green"
                       title="Modificar"
-                      onClick={() =>
-                        handleChangeCat(category, orderDetail.orderid)
-                      }
+                      onClick={() => handleChangeCat(category, orderDetail)}
                       cursor="pointer"
                     />
                   </span>
@@ -465,13 +667,16 @@ export default function AdminOrders() {
                     />
                   </span>
                 </>
-              ) : (
+              ) : orderDetail.ship_status !== 'Cancelado' &&
+                orderDetail.ship_status !== 'Enviado' ? (
                 <FaPencilAlt
                   size="13"
                   title="Mudar estado"
                   onClick={() => setEditcategory(!editCategory)}
                   cursor="pointer"
                 />
+              ) : (
+                <></>
               )}
             </span>
           </li>
@@ -517,14 +722,22 @@ export default function AdminOrders() {
           {orderDetail.Orderdetails.map((orderitem) => (
             <li key={orderitem.id}>
               <strong>{orderitem.name}</strong>
-              <li>
+              <span>
                 {' '}
-                ({orderitem.price}€ x {orderitem.quantity}){' '}
+                ({orderitem.price.toFixed(2)}€ x {orderitem.quantity}){' '}
                 {(orderitem.price * orderitem.quantity).toFixed(2)}€
-              </li>
-              <li>
-                <br />
-              </li>
+              </span>
+              <br />
+              <span>
+                <OrderDetailStatus
+                  orderitem={orderitem}
+                  orderid={orderDetail.orderid}
+                  exitOrder={() => {
+                    setOrderDetail({});
+                    setRunGetData(true);
+                  }}
+                />
+              </span>
             </li>
           ))}
         </ul>
@@ -540,11 +753,14 @@ export default function AdminOrders() {
 
   return (
     <MainContainer>
-      <ScrollTop />
       <Loading isLoading={isLoading} />
+      <ScrollTop />
       <Container>
         <>
           <Title>Gestão de ordens</Title>
+          <Button type="submit" onClick={(evt) => handleClick(evt)}>
+            Voltar
+          </Button>
           <MasterTable>
             <tbody>
               <tr>

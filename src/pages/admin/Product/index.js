@@ -143,8 +143,8 @@ export default function Product() {
 
   return (
     <MainContainer>
-      <ScrollTop />
       <Loading isLoading={isLoading} />
+      <ScrollTop />
       <Container>
         <TitleHeader>Gestão de Produtos</TitleHeader>
         <div>

@@ -5,7 +5,6 @@ export const Title = styled.h1`
   text-align: center;
   padding: 10px;
   font-size: 25px;
-  margin-bottom: 50px;
 `;
 
 export const Container = styled.section`
@@ -53,37 +52,6 @@ export const Table = styled.table`
     margin: 5px;
     padding: 3px;
     width: 100%;
-  }
-`;
-
-export const Table1 = styled.table`
-  font-size: max(1vw, 10px);
-
-  align-items: center;
-  width: 100%;
-  vertical-align: baseline;
-  text-align: center;
-
-  tr {
-    cursor: pointer;
-  }
-
-  td {
-    padding-right: 10px;
-    padding-bottom: 5px;
-  }
-
-  .category {
-    width: 50px !important;
-  }
-
-  th {
-    padding-right: 10px;
-    padding-bottom: 15px;
-  }
-
-  input {
-    margin: 5px;
   }
 `;
 
@@ -158,18 +126,4 @@ export const Detalhe = styled.div`
     font-size: max(1vw, 10px);
     color: ${colors.primaryDarkColor};
   }
-`;
-
-export const CategoryStyle = styled.select`
-  font-size: max(1vw, 10px);
-  width: 100px;
-  position: relative;
-  margin: 5px;
-`;
-
-export const CategoryStyle1 = styled.select`
-  font-size: max(1vw, 10px);
-  width: 80px;
-  position: relative;
-  margin: 5px;
 `;

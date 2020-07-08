@@ -244,6 +244,9 @@ export default function AdminClients() {
       <Container>
         <>
           <Title>Gestão de clientes</Title>
+          <Button type="submit" onClick={(evt) => handleClick(evt)}>
+            Voltar
+          </Button>
           <MasterTable>
             <tbody>
               <tr>

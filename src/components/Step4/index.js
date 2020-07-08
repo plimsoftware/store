@@ -49,6 +49,7 @@ export default function Step4({ nextStep }) {
   const [taxList, setTaxList] = useState([]);
 
   useEffect(() => {
+    // GET dos dados do cliente
     async function getDataUser() {
       try {
         setRunGetDataUser(false);
@@ -92,6 +93,7 @@ export default function Step4({ nextStep }) {
       }
     }
 
+    // Criação da Ordem
     async function getData() {
       setRunGetData(false);
       try {
@@ -103,6 +105,7 @@ export default function Step4({ nextStep }) {
           order_locationcp: locationcpDeliverOrder,
           order_phone: phoneOrder,
           order_email: emailOrder,
+          nrstockout: 0,
         });
 
         setOrderId(response.data.orderid);
@@ -153,10 +156,12 @@ export default function Step4({ nextStep }) {
       setRunOrderDetail(true);
     }
 
+    // Criação das OrderDetails
     async function setOrderDetail() {
       if (orderIdBD === 0) return;
       if (listProd.length === 0) return;
       let semStock = false;
+      let orderStatus = 'Ok';
 
       setRunOrderDetail(false);
       try {
@@ -167,7 +172,10 @@ export default function Step4({ nextStep }) {
             .qtd;
           const { name } = cartItens.find((item) => listProd[i].id === item.id);
 
-          if (listProd[i].myStock.store < quantity) semStock = true;
+          if (listProd[i].myStock.store < quantity) {
+            semStock = true;
+            orderStatus = 'Sem stock';
+          }
 
           const newListProd = [...listProd];
 
@@ -178,14 +186,27 @@ export default function Step4({ nextStep }) {
             setListProd(newListProd);
           }
 
+          // Cria OrderDetail
           axios.post('/orderdetail/', {
             order_id: orderIdBD,
             name,
             price: newListProd[i].price,
             tax: newListProd[i].tax,
             quantity,
+            status: orderStatus,
             product_id: newListProd[i].id,
           });
+
+          // Update Stock
+          if (!semStock) {
+            // eslint-disable-next-line no-await-in-loop
+            const { data } = await axios.get(`/stock/${newListProd[i].id}`);
+
+            axios.put(`/stock/${newListProd[i].id}`, {
+              store: data.stock.store - quantity,
+              expedition: data.stock.expedition + quantity,
+            });
+          }
 
           newTotal += quantity * newListProd[i].price;
 
@@ -234,8 +255,11 @@ export default function Step4({ nextStep }) {
 
       if (semStock) {
         try {
-          await axios.put(`/order/${orderId}`, {
-            ship_status: 'Sem stock',
+          axios.get(`/order/${orderId}`).then(({ data }) => {
+            axios.put(`/order/${orderId}`, {
+              ship_status: 'Sem stock',
+              nrstockout: data.nrstockout + 1,
+            });
           });
         } catch (err) {
           const status = get(err, 'response.status', 0);
@@ -366,9 +390,9 @@ export default function Step4({ nextStep }) {
   };
 
   const handleStepForward = () => {
+    dispatch(actions.clearShopCart());
     history.push('/');
     nextStep(1);
-    dispatch(actions.clearShopCart());
   };
 
   return (

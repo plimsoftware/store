@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaCubes } from 'react-icons/fa';
+import { FaCubes, FaSearch, FaHouseDamage } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { get } from 'lodash';
 import StockDetail from '../../../components/StockDetail';
@@ -24,6 +24,8 @@ export default function Stock() {
   const [runGetData, setRunGetData] = useState(true);
   const [category, setCategory] = useState('0');
   const [categoryList, setCategoryList] = useState([]);
+  const [filterStore, setFilterStore] = useState(false);
+  const [filterWareHouse, setFilterWareHouse] = useState(false);
   const [detailStatus, setDetailStatus] = useState(false); // Janela detalhes
   const [currentProd, setCurrentProd] = useState({
     myStock: { store: 0, warehouse: 0 },
@@ -56,11 +58,17 @@ export default function Stock() {
 
       try {
         if (category === '0') {
-          const responseProd = await axios.get('/product/?admin=true');
+          const responseProd = await axios.get(
+            `/product/?admin=true${
+              filterStore === true ? '&filterStore=true' : '&filterStore=false'
+            }${filterWareHouse ? '&filterWarehouse=true' : ''}`
+          );
           setProdList(responseProd.data);
         } else {
           const responseProd = await axios.get(
-            `/product/?catid=${category}&admin=true`
+            `/product/?catid=${category}&admin=true${
+              filterStore === true ? '&filterStore=true' : '&filterStore=false'
+            }${filterWareHouse ? '&filterWarehouse=true' : ''}`
           );
           setProdList(responseProd.data);
         }
@@ -73,7 +81,7 @@ export default function Stock() {
 
     getProdCat();
     if (runGetData) getData();
-  }, [runGetData, category]);
+  }, [runGetData, category, filterWareHouse, filterStore]);
 
   const handleClickDetail = (prod) => {
     setCurrentProd(prod);
@@ -83,6 +91,18 @@ export default function Stock() {
   const handleCloseDetail = () => {
     setDetailStatus(false);
     setRunGetData(true);
+  };
+
+  const handleFilterStore = () => {
+    setDetailStatus(false);
+    setRunGetData(true);
+    setFilterStore(!filterStore);
+  };
+
+  const handleFilterWarehouse = () => {
+    setDetailStatus(false);
+    setRunGetData(true);
+    setFilterWareHouse(!filterWareHouse);
   };
 
   return (
@@ -128,6 +148,81 @@ export default function Stock() {
               <th>Armazém</th>
               <th>Em expedição</th>
               <th> </th>
+            </tr>
+            <tr>
+              <td> </td>
+              <td>
+                {filterStore === true ? (
+                  <>
+                    <FaSearch
+                      color="green"
+                      title="Mostrar todo o stock"
+                      cursor="pointer"
+                      size="12"
+                      onClick={() => handleFilterStore()}
+                    />
+                    <FaHouseDamage
+                      color="green"
+                      title="Mostrar todo o stock"
+                      cursor="pointer"
+                      size="12"
+                      onClick={() => handleFilterStore()}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <FaSearch
+                      cursor="pointer"
+                      title="Mostrar stock vazio"
+                      size="12"
+                      onClick={() => handleFilterStore()}
+                    />
+                    <FaHouseDamage
+                      cursor="pointer"
+                      title="Mostrar stock vazio"
+                      size="12"
+                      onClick={() => handleFilterStore()}
+                    />
+                  </>
+                )}
+              </td>
+              <td>
+                {filterWareHouse === true ? (
+                  <>
+                    <FaSearch
+                      color="green"
+                      title="Mostrar todo o stock"
+                      cursor="pointer"
+                      size="12"
+                      onClick={() => handleFilterWarehouse()}
+                    />
+                    <FaHouseDamage
+                      color="green"
+                      title="Mostrar todo o stock"
+                      cursor="pointer"
+                      size="12"
+                      onClick={() => handleFilterWarehouse()}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <FaSearch
+                      cursor="pointer"
+                      title="Mostrar stock vazio"
+                      size="12"
+                      onClick={() => handleFilterWarehouse()}
+                    />
+                    <FaHouseDamage
+                      cursor="pointer"
+                      title="Mostrar stock vazio"
+                      size="12"
+                      onClick={() => handleFilterWarehouse()}
+                    />
+                  </>
+                )}
+              </td>
+              <td> </td>
+              <td> </td>
             </tr>
 
             {prodList.length !== 0 ? (

@@ -5,7 +5,6 @@ export const Title = styled.h1`
   text-align: center;
   padding: 10px;
   font-size: 25px;
-  margin-bottom: 50px;
 `;
 
 export const Container = styled.section`
@@ -95,8 +94,10 @@ export const MasterTable = styled.table`
   }
 
   .noOrders {
+    width: 100%;
     display: flex;
     justify-content: center;
+    text-align: center;
   }
 `;
 

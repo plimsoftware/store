@@ -94,20 +94,6 @@ export const ProdContainer = styled.div`
   }
 `;
 
-export const Button = styled.button`
-  width: 15px;
-  height: 14px;
-  line-height: 0.25em;
-  color: white;
-  background-color: red;
-  border: none;
-  margin-bottom: 1px;
-  font-size: 11px;
-  align-content: center;
-  justify-content: center;
-  cursor: pointer;
-`;
-
 export const Table = styled.table`
   width: 95%;
   margin: 30px 5px 0 5px;

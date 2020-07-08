@@ -16,14 +16,12 @@ import Step1 from '../../components/Step1';
 import Step2 from '../../components/Step2';
 import Step3 from '../../components/Step3';
 import Step4 from '../../components/Step4';
-import ScrollTop from '../../components/ScrollTop';
 
 export default function CheckOut() {
   const [etapa, setEtapa] = useState(1);
 
   return (
     <MainContainer>
-      <ScrollTop />
       <Container>
         {etapa !== 4 ? (
           <TitleHeader>Checkout</TitleHeader>

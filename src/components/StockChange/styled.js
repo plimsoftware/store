@@ -30,7 +30,7 @@ export const Close = styled.button`
 `;
 
 export const ProdContainer = styled.div`
-  position: relative;
+  position: fixed;
   width: 300px;
   height: 100px;
   z-index: 3;

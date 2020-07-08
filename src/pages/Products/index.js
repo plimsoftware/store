@@ -62,12 +62,14 @@ export default function Products() {
   );
 
   Pagination.defaultProps = {
-    pages: {},
+    pages: [],
     goTo: () => {},
   };
 
   Pagination.propTypes = {
-    pages: Proptype.shape([]),
+    pages: Proptype.arrayOf(
+      Proptype.oneOfType([Proptype.shape({}), Proptype.array])
+    ),
     goTo: Proptype.func,
   };
 
@@ -101,7 +103,7 @@ export default function Products() {
         if (data.length > 0) {
           setProducts(divideItensIntoPages(data));
         } else {
-          setProducts(data);
+          // setProducts(data);
         }
         setInputsInitial(data.length);
       } else {

@@ -46,7 +46,7 @@ export default function StockDetail({ detailStatus, currentProd, close }) {
     async function updateData() {
       setMyData(false);
       try {
-        await axios.put(`/stock/${currentProd.id}`, {
+        await axios.put(`/stock/admin/${currentProd.id}`, {
           store: myStore,
           warehouse: myWarehouse,
         });

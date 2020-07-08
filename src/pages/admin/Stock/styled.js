@@ -1,11 +1,6 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { primaryDarkColor, primaryColor } from '../../../config/colors';
-
-export const Title = styled.h1`
-  text-align: center;
-  padding: 10px;
-`;
+import { primaryDarkColor } from '../../../config/colors';
 
 export const TitleHeader = styled.h1`
   text-align: center;
@@ -83,32 +78,6 @@ export const MainContainer = styled.section`
   justify-content: flex-start;
 `;
 
-export const Option = styled(Link)`
-  width: 90%;
-  display: inline-flex;
-  height: 60px;
-  margin: 10px;
-  padding: 10px;
-  background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.07);
-  border: none;
-  color: ${primaryDarkColor};
-  align-items: center;
-
-  &:hover {
-    transition: all 300ms;
-    filter: brightness(95%);
-  }
-
-  .icon {
-    width: 20%;
-  }
-  .letras {
-    width: 65%;
-    text-align: center;
-  }
-`;
-
 export const Table = styled.table`
   width: 100%;
   margin-top: 30px;
@@ -135,13 +104,6 @@ export const Table = styled.table`
   }
 `;
 
-export const DivCat = styled.div`
-  justify-content: left !important;
-  display: flex;
-  flex-direction: row;
-  font-size: 12px;
-`;
-
 export const ButtonRes = styled(Link)`
   cursor: pointer;
   background: ${primaryDarkColor};
@@ -158,27 +120,6 @@ export const ButtonRes = styled(Link)`
   width: 300px;
   align-self: center;
   padding-top: 5px;
-
-  &:hover {
-    filter: brightness(75%);
-  }
-`;
-
-export const Button = styled(Link)`
-  cursor: pointer;
-  background: ${primaryColor};
-  border: none;
-  color: #fff;
-  border-radius: 4px;
-  margin: 5px;
-  font-size: 12px;
-  height: 25px;
-  font-weight: bold;
-  text-align: center;
-  transition: all 300ms;
-  width: 150px;
-  align-self: center;
-  padding-top: 4px;
 
   &:hover {
     filter: brightness(75%);

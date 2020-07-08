@@ -189,7 +189,12 @@ export default function Orders() {
           </li>
           <li>
             <span>
-              <strong>Estado:</strong> {orderDetail.ship_status}
+              <strong>Estado:</strong>
+              {orderDetail.ship_status === 'Sem stock' ? (
+                <span style={{ color: 'red' }}>{orderDetail.ship_status}</span>
+              ) : (
+                <span>{orderDetail.ship_status}</span>
+              )}
             </span>
           </li>
           <li>
@@ -245,6 +250,16 @@ export default function Orders() {
                 <strong>
                   {(orderitem.price * orderitem.quantity).toFixed(2)}€
                 </strong>
+              </span>
+            </li>
+            <li>
+              <span>
+                <strong>Estado:</strong>
+                {orderitem.status === 'Sem stock' ? (
+                  <span style={{ color: 'red' }}>{orderitem.status}</span>
+                ) : (
+                  <span>{orderitem.status}</span>
+                )}
               </span>
             </li>
           </ul>
