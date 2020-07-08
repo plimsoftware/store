@@ -8,6 +8,7 @@ import Fotos from '../pages/Fotos';
 import Register from '../pages/Register';
 import Checkout from '../pages/Checkout';
 import Page404 from '../pages/Page404';
+import InfoCookies from '../pages/InfoCookies';
 import Profile from '../pages/Profile';
 import ChangePass from '../pages/ChangePass';
 import ValidateMail from '../pages/ValidateMail';
@@ -152,6 +153,7 @@ export default function Routes() {
         isClosed
         isAdmin={false}
       />
+      <PrivateRoute exact path="/infocookies/" component={InfoCookies} />
       <PrivateRoute path="*" component={Page404} />
     </Switch>
   );
