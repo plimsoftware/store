@@ -88,11 +88,7 @@ export default function Step1({ nextStep }) {
 
         return newList;
       });
-      const listURL = newList
-        .map((el, idx) => {
-          return `list[${idx}]=${el}`;
-        })
-        .join('&');
+      const listURL = newList.map((el, idx) => `list[${idx}]=${el}`).join('&');
 
       if (cartItens.length === 0) {
         setListProd([]);
